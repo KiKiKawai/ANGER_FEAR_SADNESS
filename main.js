@@ -5,23 +5,7 @@ let actual_isi_delay_minmax = [300, 500];
 let raf_warmup = 100;
 let basic_times = {};
 let isi_delay_minmax = [actual_isi_delay_minmax[0] - raf_warmup, actual_isi_delay_minmax[1] - raf_warmup];
-
-$(document).ready(() => {
-    window.scrollTo(0, 0);
-    let dropChoices = '';
-    countrs.forEach((word) => {
-        dropChoices += '<option value="' + word + '">' + word + '</option>';
-    });
-    $("#country").append(dropChoices);
-    detectmob();
-    set_block_texts();
-    $('#loading_id').hide();
-    $('#div_intro_general').show();
-    loadpics();
-});
-
 let yes_key, no_key;
-
 if (Math.random() < 0.5) {
     yes_key = 'i';
     no_key = 'e';
@@ -37,12 +21,28 @@ if (Math.random() < 0.5) {
     condition = 'N';
 }
 
+$(document).ready(() => {
+    window.scrollTo(0, 0);
+    let dropChoices = '';
+    countrs.forEach((word) => {
+        dropChoices += '<option value="' + word + '">' + word + '</option>';
+    });
+    $("#country").append(dropChoices);
+    detectmob();
+    set_block_texts();
+    $('#loading_id').hide();
+    $('#div_intro_general').show();
+    loadpics();
+});
+
 function consented() {
     $("#consent").hide();
     window.scrollTo(0, 0);
     window.consent_now = Date.now();
     console.log(condition,yes_key,no_key);
     $("#div_intro_dems").show();
+    prep_stims();
+
 }
 
 

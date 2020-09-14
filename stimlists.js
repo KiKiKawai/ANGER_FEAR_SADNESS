@@ -5,26 +5,39 @@ let fear = ['PANIK', 'GEFAHR', 'FURCHT', 'SCHRECK', 'SPUKEN', 'GRUSELIG', 'HORRO
 let sad = ['WEHMUT', 'WITWER', 'TRAGIK', 'WEINEN', 'TRÄNE', 'BEDAUERN', 'EINSAM', 'TROSTLOS', 'BEILEID', 'TRAUER'];
 let neu = ['PRESSE', 'FRÄULEIN', 'NEUGIER', 'SUCHE', 'GIGANT', 'TEMPO', 'ÜBEN', 'STREICHEN', 'ANONYM', 'LENKBAR'];
 
-
-let stim_dict = [];
+let prime_a = ['WUT'];
+let prime_f = ['ANGST'];
+let prime_s = ['KUMMER'];
+let prime_n = ['NEUTRAL'];
 
 /*SPECIAL PRACTICE WORDS*/
 
 /*PRIME-TARGET DICTIONARY/OBJECT*/
-if (condition == 'S') {
-    let all_stims = anger.concat(fear, sad);
-}
-else if (condition == 'N') {
-    let all_stims = anger.concat(fear, neu);
+function prep_stims() {
+    let stim_dict = [];
+    let all_stims;
+    let all_primes;
+    if (condition == 'S') {
+        let all_stims = anger.concat(fear, sad);
+        let all_primes = prime_a.concat(prime_f, prime_s);
+    } else if (condition == 'N') {
+        let all_stims = anger.concat(fear, neu);
+        let all_primes = prime_a.concat(prime_f, prime_n);
+    } else {
+        console.log('Condition Error');
+    }
 
-}
-else {
-    console.log('Condition Error');
+    for (let stim in all_stims) {
+        for (let prim in all_primes) {
+            let pair;
+            pair.prime = prim;
+            pair.target = stim;
+            stim_dict.push(pair);
+        }
+    }
+    return stim_dict;
 }
 
-
-neg_pics = shuffle(neg_pics);
-pos_pics = shuffle(pos_pics);
 
 function prep_prac() {
     let pracs = [];
