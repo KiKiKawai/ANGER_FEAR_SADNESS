@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Experiment</title>
+    <link rel="icon" type="image/png" href="lgo.png">
+    <meta charset="UTF-8">
+    <meta name="google" content="notranslate">
+    <script src="./jquery-3.4.1.min.js" type="text/javascript"></script>
+    <script src="./utils.js"></script>
+    <script src="./stimlists.js"></script>
+    <script src="./main.js"></script>
+    <link href="./style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body class="notranslate">
+
+    <div id="div_start_error" style="background:red;color:black;font-size:2.2vw;display:none;position:absolute;z-index:100;opacity:0.8;" onclick="$('#div_start_error').hide()">Server-Verbindung fehlgeschlagen. Du kannst trotzdem an der Studie
+        teilnehmen, aber du musst deine Ergebnisse manuell speichern. Wenn dies ein Live-Test ist, kontaktiere bitte lkcsgaspar@gmail.com. (Klicke auf diesen Text, um ihn zu schließen).</div>
+
+    <div id="div_end_error" style="background:red;color:black;font-size:2.2vw;display:none;position:absolute;z-index:100;" onclick="dl_as_file()">Daten konnten nicht auf dem Server gespeichert werden.<b>Klicke auf diesen Text, um deine Daten manuell
+            zu speichern.</b>
+        (Pop-ups müssen erlaubt sein.) Wenn dies ein Live-Test ist, sende deine Ergebnisdatei an claudia.kawai@univie.ac.at (oder schreibe eine Email, wenn Probleme auftreten).</div>
+
+    <div id="loading_id" style="font-size:3.2vw;text-align:center">
+        <br>
+        <br>
+        LOADING...
+    </div>
+
+
+    <div id="div_intro_general">
+        <span id='intro_id'>
+            <br>
+            <br>
+            <br>
+            Dein Browser muss sich im Vollbildmodus befinden. Drücke dafür F11 für Windows bzw. Strg+Cmd+F für Mac. Die Studie muss in einem modernen Browser, vorzugsweise Google Chrome, durchgeführt werden.
+            <br>
+            <br>
+            Um eine genaue Messung zu garantieren, schließe alle Programme (und Browser-Tabs oder -Fenster), die du derzeit nicht benötigst.
+            <br>
+            <br>
+        </span>
+        <button class="kbutt" onclick="change_div(this, '#consent')">OK</button>
+        <br><br>
+    </div>
+
+
+    <div id="consent">
+        <h1>Teilnehmerinformation und Einverständniserklärung</h1>
+
+        <p><b>Ziel der Studie:</b>
+            <br>Die Studie dient der Verifikation unserer Affektiven Silhouetten Datenbank (BASS). Du wirst verschiedene Bilder sehen, die du per Tastendruck kategorisieren musst. Dabei wird deine Reaktionszeit gemessen. Das Experiment dauert etwa
+            10-15 Minuten.</p>
+        <p><b>Gesundheitsrisiken:</b>
+            <br>Einige der Bilder, die dir gezeigt werden, sind sehr explizit und können Gewalt oder Erotika darstellen. Es sind aber keinerlei physische oder psychische Risiken im Zusammenhang mit der Teilnahme an dieser Studie zu erwarten.</p>
+        </p>
+
+        <p><b>Deine Rechte:</b>
+            <br>Du kannst die Teilnahme an der Studie jederzeit und ohne Angabe von Gründen beenden (durch Schließen oder Aktualisieren dieser Webseite). In diesem Fall werden deine Daten gelöscht. Wenn du an den Ergebnissen der Studie
+            interessiert bist, wende dich bitte an den Experimentleiter (claudia.kawai@univie.ac.at).</p>
+
+        <p><b>Anonymität und Privatsphäre:</b>
+            <br>Die Ergebnisse der Studie werden zu Forschungszwecken verwendet und veröffentlicht. Die Daten geben keinen Aufschluss über deine Person. Du wirst nicht namentlich genannt und deine Identität wird streng vertraulich behandelt. Auch
+            nach deiner Teilnahme (bis zur Veröffentlichung) kannst du die Verwendung deiner Daten untersagen. Alle Anliegen kannst du per E-Mail senden an: claudia.kawai@univie.ac.at</p>
+        </p>
+
+        <p><b>Einverständnis:</b>
+            <br>Durch Klicken des "Zustimmen & Fortfahren"-Buttons erklärst du, dass du die obigen Informationen gelesen und verstanden hast. Du bestätigst, dass du die Aufgaben konzentriert und nach bestem Wissen und Gewissen bearbeitest. Du
+            erklärst
+            dich mit der Teilnahme an dieser Studie und der anschließenden Analyse deiner Daten durch autorisiertes Personal einverstanden.<p>
+                <br>
+                <button type="button" id="consent_button" class="kbutt" onclick='consented();'>Zustimmen & Fortfahren</button>
+    </div>
+
+    <div id="div_intro_dems">
+        <h2>Demografische Daten</h2>
+        <h3>Bitte fülle die folgenden Angaben zu deiner Person aus:</h3>
+        <p><b>Geschlecht:</b></p>
+        <input type="radio" name="gender" class="dem_form" value="m"> Männlich
+        <input type="radio" name="gender" class="dem_form" value="f"> Weiblich
+        <p><b>Alter:</b></p>
+        <input type="number" value="" min="1" max="120" class="dem_form" id="age"><br>
+        <p><b>Herkunftsland:</b></p>
+        <select id="country" style="text-transform: capitalize;height: 30px;font-size: 25px;" class="dem_form">
+            <option value="">-</option>
+        </select>
+        <br>
+        <br>
+        <br>
+        <button class="kbutt" onclick="validate_form('.dem_form')">OK</button>
+        <br>
+    </div>
+
+
+    <div id="intro">
+        <b><span id="feedback_id"></span></b>
+        <div id="infotext">
+            <br><br>
+            Im Folgenden werden dir nacheinander Bilder in verschiedenen Farben präsentiert.<br><br>
+            Drücke <b>"<span class="pos_key"></span>"</b>, wenn das Bild etwas <b>Positives</b> zeigt.<br>Drücke <b>"<span class="neg_key"></span>"</b>, wenn das Bild etwas <b>Negatives</b> zeigt.
+            <br><br>
+            Hier siehst du alle positiven und negativen Bilder abgebildet. Schaue dir alle Bilder in beiden Kategorien an, damit du bei der anstehenden Aufgabe die richtige Antwort geben kannst.
+            <br><br>
+            <hr>
+            <h3>Positive Bilder</h3>
+
+            <div id="pos_div">
+            </div>
+
+            <hr>
+            <h3>Negative Bilder</h3>
+
+            <div id="neg_div">
+            </div>
+
+            <br>
+            <hr>
+            <br>
+            Das Experiment beginnt mit einer kurzen Übungsrunde. Wenn du zu wenig korrekte oder zu langsame Antworten gibst, muss die Übungsrunde wiederholt werden.
+            <br>
+        </div>
+
+        <br>
+        <br>
+        <div class="load_screen">
+            <i>Bilder werden geladen! Einen Moment Geduld.</i>
+        </div>
+        <div class="start_button">
+            <button type="button" class="kbutt" onclick="runblock();">Start</button>
+        </div>
+        <br>
+
+    </div>
+
+    <div id="div_stimdisp">
+
+        <div id="stimulus">
+            <canvas id="rate_canvas" width="300" height="300"></canvas>
+        </div>
+
+        <p id="start_text">Zum Starten Leertaste drücken.</p>
+    </div>
+
+    <div id="Bye" style="width: 70%;font-size:2.3vw;text-align:center;" class="intro">
+        <br>
+        <b>Das Experiment ist nun vorbei, vielen Dank für deine Teilnahme!</b>
+        <br>
+         <h3>Zum Öffnen bzw. Herunterladen des Debriefings klicke <a href="https://homepage.univie.ac.at/claudia.kawai/silhou3/Debriefing_Silhouetten3.pdf" target="_tab">hier</a>.
+        </h3>
+        <br>
+        <h3>Um die Studie abzuschließen und deine Credits im LABS zu verbuchen, klicke diesen Link:</h3>
+        <span style="color:red" id="passw_display"></span>
+        <br>
+        <br>
+        <br>Bei Fragen zur Studie wende dich an claudia.kawai@univie.ac.at
+        <br><br>
+    </div>
+
+</body>
