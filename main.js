@@ -1,7 +1,6 @@
 /*jshint esversion: 6 */
 
-let experiment_title = 'silhou_exp3';
-let canvas, ctx;
+let experiment_title = 'anger_fear';
 let actual_isi_delay_minmax = [300, 500];
 let raf_warmup = 100;
 let basic_times = {};
@@ -14,8 +13,6 @@ $(document).ready(() => {
         dropChoices += '<option value="' + word + '">' + word + '</option>';
     });
     $("#country").append(dropChoices);
-    canvas = document.getElementById('rate_canvas');
-    ctx = canvas.getContext('2d');
     detectmob();
     set_block_texts();
     $('#loading_id').hide();
@@ -23,20 +20,28 @@ $(document).ready(() => {
     loadpics();
 });
 
-let key_for_pos, key_for_neg;
+let yes_key, no_key;
 
 if (Math.random() < 0.5) {
-    key_for_pos = 'i';
-    key_for_neg = 'e';
+    yes_key = 'i';
+    no_key = 'e';
 } else {
-    key_for_pos = 'e';
-    key_for_neg = 'i';
+    yes_key = 'e';
+    no_key = 'i';
+}
+
+let condition;
+if (Math.random() < 0.5) {
+    condition = 'S';
+} else {
+    condition = 'N';
 }
 
 function consented() {
     $("#consent").hide();
     window.scrollTo(0, 0);
     window.consent_now = Date.now();
+    console.log(condition,yes_key,no_key);
     $("#div_intro_dems").show();
 }
 
@@ -72,34 +77,6 @@ let subject_id =
 
 let images = {};
 
-function loadpics() {
-    $(".load_screen").show();
-    $(".start_button").hide();
-    // preload
-    let promises = [];
-    for (let i = 0; i < all_file_names.length; i++) {
-        ((filename, promise) => {
-            images[filename] = new Image();
-            images[filename].id = filename;
-            images[filename].onload = () => {
-                promise.resolve();
-            };
-            images[filename].src = './imgs/' + filename;
-            if (filename.endsWith('_p_bw.png')) {
-                images[filename].alt = "-- image not loaded --";
-                document.getElementById("pos_div").appendChild(images[filename]);
-            } else if (filename.endsWith('_n_bw.png')) {
-                images[filename].alt = "-- image not loaded --";
-                document.getElementById("neg_div").appendChild(images[filename]);
-            }
-        })(all_file_names[i], promises[i] = $.Deferred());
-    }
-    $.when.apply($, promises).done(() => {
-        console.log("All images ready!");
-        $(".load_screen").hide();
-        $(".start_button").show();
-    });
-}
 
 window.params = new URLSearchParams(location.search);
 let studcod = params.get('a');
