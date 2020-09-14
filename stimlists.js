@@ -18,24 +18,22 @@ function prep_stims() {
     let all_stims;
     let all_primes;
     if (condition == 'S') {
-        let all_stims = anger.concat(fear, sad);
-        let all_primes = prime_a.concat(prime_f, prime_s);
+        all_stims = anger.concat(fear, sad);
+        all_primes = prime_a.concat(prime_f, prime_s);
     } else if (condition == 'N') {
-        let all_stims = anger.concat(fear, neu);
-        let all_primes = prime_a.concat(prime_f, prime_n);
+        all_stims = anger.concat(fear, neu);
+        all_primes = prime_a.concat(prime_f, prime_n);
     } else {
         console.log('Condition Error');
     }
-
-    for (let stim in all_stims) {
-        for (let prim in all_primes) {
-            let pair;
-            pair.prime = prim;
-            pair.target = stim;
-            stim_dict.push(pair);
+    for (let stim of all_stims) {
+        for (let prim of all_primes) {
+            stim_dict.push({prime : prim, target : stim });
         }
     }
+
     return stim_dict;
+
 }
 
 
