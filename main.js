@@ -35,7 +35,6 @@ $(document).ready(() => {
     set_block_texts();
     $('#loading_id').hide();
     $('#div_intro_general').show();
-    loadpics();
 });
 
 function consented() {
@@ -65,6 +64,7 @@ function validate_form(form_class) {
             $("#country").val() != '')) {
         $("#div_intro_dems").hide();
         open_fulls();
+        console.log('consented');
         window.scrollTo(0, 0);
         nextblock();
     } else {
@@ -385,7 +385,7 @@ function nextblock() {
     document.documentElement.style.cursor = 'auto';
     if (blocknum <= 3) {
         block_trialnum = 0;
-        if (blocknum == 1) {
+        /*if (blocknum == 1) {
             crrnt_phase = 'practice';
             teststim = names_to_dicts(stim_practice[prc_num]);
             prc_num++;
@@ -407,7 +407,7 @@ function nextblock() {
                 crrnt_phase = 'colors';
             }
             teststim = get_main(stim_main2);
-        }
+        }*/
         // teststim = teststim.slice(-6);
         rt_data_dict = {};
         $("#div_stimdisp").hide();

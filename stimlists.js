@@ -41,7 +41,7 @@ function prep_stims() {
     return stim_dict;
 }
 
-
+/*
 function prep_prac() {
     let pracs = [];
     neg_pics.forEach((it, i) => {
@@ -62,9 +62,6 @@ function prep_prac() {
 }
 
 let stim_practice = prep_prac();
-
 let all_bw = neg_pics.concat(pos_pics);
-
-
-
 let all_file_names = all_bw.concat(stim_main1, stim_main2);
+*/
