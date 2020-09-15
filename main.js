@@ -15,10 +15,13 @@ if (Math.random() < 0.5) {
 }
 
 let condition;
+let c_prime;
 if (Math.random() < 0.5) {
     condition = 'S';
+    c_prime = 'KUMMER';
 } else {
     condition = 'N';
+    c_prime = 'NEUTRAL';
 }
 
 $(document).ready(() => {
@@ -42,7 +45,14 @@ function consented() {
     console.log(condition,yes_key,no_key);
     $("#div_intro_dems").show();
     prep_stims();
+}
 
+function aborted() {
+    $("#consent").hide();
+    window.scrollTo(0, 0);
+    window.consent_now = Date.now();
+    console.log('Experiment aborted!');
+    $("#abort_div").show();
 }
 
 
@@ -401,8 +411,9 @@ function nextblock() {
         // teststim = teststim.slice(-6);
         rt_data_dict = {};
         $("#div_stimdisp").hide();
-        $('.pos_key').text(key_for_pos.toUpperCase());
-        $('.neg_key').text(key_for_neg.toUpperCase());
+        $('.key_yes').text(yes_key.toUpperCase());
+        $('.key_no').text(no_key.toUpperCase());
+        $('.prime_con').text(c_prime.toUpperCase());
         $("#intro").show();
     } else {
         document.body.style.backgroundColor = '#ccc';

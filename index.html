@@ -71,6 +71,8 @@
             dich mit der Teilnahme an dieser Studie und der anschließenden Analyse deiner Daten durch autorisiertes Personal einverstanden.<p>
                 <br>
                 <button type="button" id="consent_button" class="kbutt" onclick='consented();'>Zustimmen & Fortfahren</button>
+                <button type="button" id="consent_button" class="kbutt" onclick='aborted();'>Nicht Zustimmen & Seite Schließen</button>
+
     </div>
 
     <div id="div_intro_dems">
@@ -92,14 +94,23 @@
         <br>
     </div>
 
+    <div id="abort_div">
+        <h2>Experiment abgebrochen.</h2>
+        <br><br><br>
+        <p><b>Ohne dein Einverständnis werden wir keine Testung durchführen!</b></p>
+        <br><br>
+        <p>Wenn du es dir anders überlegst, kannst du die Seite aktualisieren oder zu einem späteren Zeitpunkt wieder aufrufen.</p>
+    </div>
 
     <div id="intro">
         <b><span id="feedback_id"></span></b>
         <div id="infotext">
             <br><br>
-            Im Folgenden werden dir nacheinander Wörter präsentiert.<br><br>Zuerst siehst du das Kategoriewort<br><br>
-            Drücke <b>"<span class="pos_key"></span>"</b>, wenn das Bild etwas <b>Positives</b> zeigt.<br>Drücke <b>"<span class="neg_key"></span>"</b>, wenn das Bild etwas <b>Negatives</b> zeigt.
+            Im Folgenden werden dir nacheinander Wortpaare präsentiert.<br><br>
+            Das erste Wort, das du dabei siehst, ist immer das <b>Kategoriewort</b>.<br><br>Insgesamt gibt es drei Kategoriewörter: <b>WUT, ANGST, <span class="prime_con"></span></b>.<br><br>Das zweite Wort, das kurz nach dem Kategoriewort erscheint, ist das Targetwort. Es gibt insgesamt 30 verschiedene Targetwörter in diesem Experiment. Jedes Targetwort gehört in eine der drei Kategorien (WUT, ANGST, <span class="prime_con"></span>).<br><br>Entscheide für jedes Targetwort, sobald es auf dem Bildschirm erscheint, ob es zu der Kategorie gehört, die das direkt zuvor gezeigte Kategoriewort beschreibt. 
+            Drücke <b>"<span class="key_yes"></span>"</b>, wenn Target und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Target und Kategoriewort <b>nicht zur selben Kategorie</b> gehören.
             <br><br>
+            <!--
             Hier siehst du alle positiven und negativen Bilder abgebildet. Schaue dir alle Bilder in beiden Kategorien an, damit du bei der anstehenden Aufgabe die richtige Antwort geben kannst.
             <br><br>
             <hr>
@@ -113,9 +124,9 @@
 
             <div id="neg_div">
             </div>
-
+-->
             <br>
-            <hr>
+            <hr> <!-- horizontal line -->
             <br>
             Das Experiment beginnt mit einer kurzen Übungsrunde. Wenn du zu wenig korrekte oder zu langsame Antworten gibst, muss die Übungsrunde wiederholt werden.
             <br>

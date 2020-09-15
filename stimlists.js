@@ -17,6 +17,7 @@ function prep_stims() {
     let stim_dict = [];
     let all_stims;
     let all_primes;
+    let all_colors = ['red', 'gray'];
     if (condition == 'S') {
         all_stims = anger.concat(fear, sad);
         all_primes = prime_a.concat(prime_f, prime_s);
@@ -28,12 +29,16 @@ function prep_stims() {
     }
     for (let stim of all_stims) {
         for (let prim of all_primes) {
-            stim_dict.push({prime : prim, target : stim });
+            for (let colr of all_colors) {
+                stim_dict.push({
+                    prime: prim,
+                    target: stim,
+                    color: colr
+                });
+            }
         }
     }
-
     return stim_dict;
-
 }
 
 
