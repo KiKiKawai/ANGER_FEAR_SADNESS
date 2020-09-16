@@ -1,10 +1,11 @@
 /*jshint esversion: 6 */
 
 let experiment_title = 'anger_fear';
+let canvas, ctx; // not needed?
 let actual_isi_delay_minmax = [300, 500];
-let raf_warmup = 100;
+//let raf_warmup = 100; // not needed
 let basic_times = {};
-let isi_delay_minmax = [actual_isi_delay_minmax[0] - raf_warmup, actual_isi_delay_minmax[1] - raf_warmup];
+let isi_delay_minmax = [actual_isi_delay_minmax[0], actual_isi_delay_minmax[1]]; //not needed
 let yes_key, no_key;
 if (Math.random() < 0.5) {
     yes_key = 'i';
@@ -14,16 +15,6 @@ if (Math.random() < 0.5) {
     no_key = 'i';
 }
 
-let condition;
-let c_prime;
-if (Math.random() < 0.5) {
-    condition = 'S';
-    c_prime = 'KUMMER';
-} else {
-    condition = 'N';
-    c_prime = 'NEUTRAL';
-}
-
 $(document).ready(() => {
     window.scrollTo(0, 0);
     let dropChoices = '';
@@ -31,8 +22,11 @@ $(document).ready(() => {
         dropChoices += '<option value="' + word + '">' + word + '</option>';
     });
     $("#country").append(dropChoices);
+    canvas = document.getElementById('rate_canvas');
+    ctx = canvas.getContext('2d');
     detectmob();
     set_block_texts();
+    console.log('showing block texts now');
     $('#loading_id').hide();
     $('#div_intro_general').show();
 });
@@ -41,8 +35,10 @@ function consented() {
     $("#consent").hide();
     window.scrollTo(0, 0);
     window.consent_now = Date.now();
-    console.log(condition,yes_key,no_key);
+    console.log(condition, yes_key, no_key);
     $("#div_intro_dems").show();
+    prep_prac();
+    console.log('prepping practice');
     prep_stims();
 }
 
@@ -53,7 +49,6 @@ function aborted() {
     console.log('Experiment aborted!');
     $("#abort_div").show();
 }
-
 
 let once_asked = false;
 
@@ -83,7 +78,6 @@ let subject_id =
     rchoice("CDFGHJKLMNPQRSTVWXZ") +
     rchoice("AEIOUY") +
     rchoice("CDFGHJKLMNPQRSTVWXZ") + '_' + neat_date();
-
 
 let images = {};
 
@@ -210,7 +204,7 @@ function set_block_texts() {
 
 
 // stimulus sequence generation
-
+/*
 function names_to_dicts(thefilenames) {
     let dict_list = [];
     let abbr_dict = {
@@ -237,6 +231,7 @@ function names_to_dicts(thefilenames) {
     });
     return dict_list;
 }
+*/
 
 // the task
 
@@ -254,6 +249,18 @@ let rt_start = 99999;
 let stim_start = 0;
 let listen = false;
 
+function stim_display(stim_name) { // formerly img_name
+    console.log('in stim display');
+    if (trial_stim.prime_cat == trial_stim.target_cat) {
+        correct_key = yes_key;
+    } else {
+        correct_key = no_key;
+    }
+    stim_start = now();
+    listen = true;
+}
+
+/* old image display function 
 function image_display(img_name) {
     if (trial_stim.valence == "positive") {
         correct_key = key_for_pos;
@@ -272,15 +279,16 @@ function image_display(img_name) {
             listen = true;
         });
     }, raf_warmup); // time needed for raF timing "warmup"
-}
+}*/
 
 // isi
 let isi_delay;
 
 function isi() {
+    console.log('isi function');
     isi_delay = randomdigit(1, isi_delay_minmax[1] - isi_delay_minmax[0]);
     setTimeout(function() {
-        image_display(trial_stim.file);
+        stim_display(trial_stim.prime);
     }, isi_delay);
 }
 
@@ -318,11 +326,14 @@ function practice_eval() {
 let warn_set;
 
 function next_trial() {
+    console.log('started next_trial function');
     if (teststim.length > 0) {
+        console.log('teststim.length > 0');
         trial_stim = teststim.shift();
         block_trialnum++;
         isi();
     } else {
+        console.log('about to start the first trial i guess');
         if ((crrnt_phase !== 'practice') || (practice_eval())) {
             blocknum++;
             $("#infotext").html(block_texts.shift());
@@ -361,7 +372,7 @@ function add_response() {
         keys_code,
         rt_start,
         incorrect,
-        isi_delay + isi_delay_minmax[0] + raf_warmup,
+        isi_delay + isi_delay_minmax[0],
         String(new Date().getTime())
     ].join('\t') + '\n';
     rt_start = 99999;
@@ -378,36 +389,30 @@ function add_response() {
 }
 
 let crrnt_phase;
-
 let prc_num = 0;
 
 function nextblock() {
     document.documentElement.style.cursor = 'auto';
     if (blocknum <= 3) {
         block_trialnum = 0;
-        /*if (blocknum == 1) {
+        if (blocknum == 1) {
             crrnt_phase = 'practice';
-            teststim = names_to_dicts(stim_practice[prc_num]);
+            //teststim = names_to_dicts(stim_practice[prc_num]);
+            teststim = stim_practice[prc_num];
             prc_num++;
             if (prc_num >= stim_practice.length) {
                 prc_num = 0;
                 console.log('Practice reset to zero!');
             }
         } else if (blocknum == 2) {
-            if (first_type == 'color') {
-                crrnt_phase = 'colors';
-            } else {
-                crrnt_phase = 'bws';
-            }
-            teststim = get_main(stim_main1);
+            crrnt_phase = 'experiment_b1';
+            //teststim = get_main(stim_main1);
+            teststim = stim_main1;
+
         } else {
-            if (first_type == 'color') {
-                crrnt_phase = 'bws';
-            } else {
-                crrnt_phase = 'colors';
-            }
-            teststim = get_main(stim_main2);
-        }*/
+            crrnt_phase = 'experiment_b2';
+            teststim = stim_main2;
+        }
         // teststim = teststim.slice(-6);
         rt_data_dict = {};
         $("#div_stimdisp").hide();
@@ -432,6 +437,7 @@ function runblock() {
     window.scrollTo(0, 0);
     can_start = true;
 }
+
 
 function get_main(thefilenams) {
     console.log('get_main()');

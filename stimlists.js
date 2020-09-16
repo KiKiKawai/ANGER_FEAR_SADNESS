@@ -1,4 +1,13 @@
 /*jshint esversion: 6 */
+let condition;
+let c_prime;
+if (Math.random() < 0.5) {
+    condition = 'S';
+    c_prime = 'KUMMER';
+} else {
+    condition = 'N';
+    c_prime = 'NEUTRAL';
+}
 
 let anger = ['ERZFEIND', 'HASSEN', 'ÄRGERNIS', 'FEHDE', 'ZORNIG', 'AGGRESSION', 'TOBEN', 'SAUER', 'STREIT', 'RACHE'];
 let fear = ['PANIK', 'GEFAHR', 'FURCHT', 'SCHRECK', 'SPUKEN', 'GRUSELIG', 'HORROR', 'SCHAURIG', 'SORGEN', 'FLUCHT'];
@@ -11,6 +20,8 @@ let prime_s = ['KUMMER'];
 let prime_n = ['NEUTRAL'];
 
 /*SPECIAL PRACTICE WORDS*/
+let pract_s = ['FEIND', 'MORDEN', 'BRUTAL', 'SCHAUDER', 'PANISCH', 'FÜRCHTEN', 'WAISE', 'TRAUERN', 'VERWEINT'];
+let pract_n = ['FEIND', 'MORDEN', 'BRUTAL', 'SCHAUDER', 'PANISCH', 'FÜRCHTEN', 'TEST', 'SALZIG', 'PLAUDERN'];
 
 /*PRIME-TARGET DICTIONARY/OBJECT*/
 function prep_stims() {
@@ -38,18 +49,62 @@ function prep_stims() {
             }
         }
     }
+    stim_dict.forEach(function(element) { // determine prime & target categories
+        if (element.prime == "WUT") {
+            element.prime_cat = "anger";
+        }
+        else if (element.prime == "ANGST") {
+            element.prime_cat = "fear";
+        }
+        else if (element.prime == "KUMMER") {
+            element.prime_cat = "sad";
+        }
+        else if (element.prime == "NEUTRAL") {
+            element.prime_cat = "neu";
+        }
+        else {console.log('Error in determining Prime Category');}
+
+        if (anger.includes(element.target)) {
+            element.target_cat = "anger";
+        }
+        else if (fear.includes(element.target)) {
+            element.target_cat = "fear";
+        }
+        else if (sad.includes(element.target)) {
+            element.target_cat = "sad";
+        }
+        else if (neu.includes(element.target)) {
+            element.target_cat = "neu";
+        }
+        else {console.log('Error in determining Target Category');}
+        });
     return stim_dict;
 }
 
-/*
 function prep_prac() {
-    let pracs = [];
-    neg_pics.forEach((it, i) => {
-        pracs.push(it);
-        pracs.push(pos_pics[i]);
-    });
+    let prac_dict = [];
+    let all_stims_p;
+    let all_primes_p;
+    if (condition == 'S') {
+        all_stims_p = pract_s;
+        all_primes_p = prime_a.concat(prime_f, prime_s);
+    } else if (condition == 'N') {
+        all_stims_p = pract_n;
+        all_primes_p = prime_a.concat(prime_f, prime_n);
+    } else {
+        console.log('Condition Error');
+    }
+    for (let stim of all_stims_p) {
+        for (let prim of all_primes_p) {
+            prac_dict.push({
+                prime: prim,
+                target: stim
+            });
+        }
+    }
+
     let prac_len = 10;
-    let outp = pracs.reduce((resultArray, item, index) => {
+    let outp = prac_dict.reduce((resultArray, item, index) => {
         const chunkIndex = Math.floor(index / prac_len);
         if (!resultArray[chunkIndex]) {
             resultArray[chunkIndex] = [];
@@ -62,6 +117,12 @@ function prep_prac() {
 }
 
 let stim_practice = prep_prac();
+
+let stim_main1 = prep_stims();
+let stim_main2 = prep_stims();
+
+/*
+
 let all_bw = neg_pics.concat(pos_pics);
 let all_file_names = all_bw.concat(stim_main1, stim_main2);
 */
