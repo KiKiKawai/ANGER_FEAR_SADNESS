@@ -23,6 +23,11 @@ let prime_n = ['NEUTRAL'];
 let pract_s = ['FEIND', 'MORDEN', 'BRUTAL', 'SCHAUDER', 'PANISCH', 'FÜRCHTEN', 'WAISE', 'TRAUERN', 'VERWEINT'];
 let pract_n = ['FEIND', 'MORDEN', 'BRUTAL', 'SCHAUDER', 'PANISCH', 'FÜRCHTEN', 'TEST', 'SALZIG', 'PLAUDERN'];
 
+let pract_anger = ['FEIND', 'MORDEN', 'BRUTAL'];
+let pract_fear = ['SCHAUDER', 'PANISCH', 'FÜRCHTEN'];
+let pract_sad = ['WAISE', 'TRAUERN', 'VERWEINT'];
+let pract_neu = ['TEST', 'SALZIG', 'PLAUDERN'];
+
 /*PRIME-TARGET DICTIONARY/OBJECT*/
 function prep_stims() {
     let stim_dict = [];
@@ -52,32 +57,28 @@ function prep_stims() {
     stim_dict.forEach(function(element) { // determine prime & target categories
         if (element.prime == "WUT") {
             element.prime_cat = "anger";
-        }
-        else if (element.prime == "ANGST") {
+        } else if (element.prime == "ANGST") {
             element.prime_cat = "fear";
-        }
-        else if (element.prime == "KUMMER") {
+        } else if (element.prime == "KUMMER") {
             element.prime_cat = "sad";
-        }
-        else if (element.prime == "NEUTRAL") {
+        } else if (element.prime == "NEUTRAL") {
             element.prime_cat = "neu";
+        } else {
+            console.log('Error in determining Prime Category');
         }
-        else {console.log('Error in determining Prime Category');}
 
         if (anger.includes(element.target)) {
             element.target_cat = "anger";
-        }
-        else if (fear.includes(element.target)) {
+        } else if (fear.includes(element.target)) {
             element.target_cat = "fear";
-        }
-        else if (sad.includes(element.target)) {
+        } else if (sad.includes(element.target)) {
             element.target_cat = "sad";
-        }
-        else if (neu.includes(element.target)) {
+        } else if (neu.includes(element.target)) {
             element.target_cat = "neu";
+        } else {
+            console.log('Error in determining Target Category');
         }
-        else {console.log('Error in determining Target Category');}
-        });
+    });
     return stim_dict;
 }
 
@@ -102,7 +103,31 @@ function prep_prac() {
             });
         }
     }
+    prac_dict.forEach(function(element) { // determine practice prime & target categories
+        if (element.prime == "WUT") {
+            element.prime_cat = "anger";
+        } else if (element.prime == "ANGST") {
+            element.prime_cat = "fear";
+        } else if (element.prime == "KUMMER") {
+            element.prime_cat = "sad";
+        } else if (element.prime == "NEUTRAL") {
+            element.prime_cat = "neu";
+        } else {
+            console.log('Error in determining Practice Prime Category');
+        }
 
+        if (pract_anger.includes(element.target)) {
+            element.target_cat = "anger";
+        } else if (pract_fear.includes(element.target)) {
+            element.target_cat = "fear";
+        } else if (pract_sad.includes(element.target)) {
+            element.target_cat = "sad";
+        } else if (pract_neu.includes(element.target)) {
+            element.target_cat = "neu";
+        } else {
+            console.log('Error in determining Practice Target Category');
+        }
+    });
     let prac_len = 10;
     let outp = prac_dict.reduce((resultArray, item, index) => {
         const chunkIndex = Math.floor(index / prac_len);
