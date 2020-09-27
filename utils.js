@@ -164,7 +164,7 @@ function neat_date() {
         ("0" + m.getMinutes()).slice(-2) + "" +
         ("0" + m.getSeconds()).slice(-2);
 }
-
+/*
 function monkeyPatchRequestPostAnimationFrame() {
     const channel = new MessageChannel();
     const callbacks = [];
@@ -203,3 +203,4 @@ function chromeWorkaroundLoop() {
         requestAnimationFrame(chromeWorkaroundLoop);
     }
 }
+*/

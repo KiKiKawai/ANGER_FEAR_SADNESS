@@ -185,7 +185,7 @@ let block_texts = [];
 
 function set_block_texts() {
     block_texts.push(`
-        Sehr gut! Nun beginnt der erste der beiden Experimentalblöcke. Die Aufgabe bleibt gleich, aber die Bilder sind eingefärbt. Zur Erinnerung:<br>
+        Sehr gut! Nun beginnt der erste der beiden Experimentalblöcke. Die Aufgabe bleibt gleich, aber die Wörter sind eingefärbt. Zur Erinnerung:<br>
         <br>
         Drücke <b>"<span class="pos_key"></span>"</b>, wenn das Bild etwas <b>Positives</b> zeigt.<br>Drücke <b>"<span class="neg_key"></span>"</b>, wenn das Bild etwas <b>Negatives</b> zeigt.
         <br>
@@ -256,11 +256,13 @@ function stim_display(stim_name) { // formerly img_name
     } else {
         correct_key = no_key;
     }
+    ctx.fillText(stim_name, 0, 0);
     stim_start = now();
     listen = true;
+    console.log('insert function to display here');
 }
 
-/* old image display function 
+/* old image display function
 function image_display(img_name) {
     if (trial_stim.valence == "positive") {
         correct_key = key_for_pos;
