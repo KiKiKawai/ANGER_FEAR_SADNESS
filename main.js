@@ -258,7 +258,7 @@ function isi() {
     isi_delay = randomdigit(1, isi_delay_minmax[1] - isi_delay_minmax[0]);
     console.log(isi_delay);
     setTimeout(function() {
-        stim_display(trial_stim.prime);
+        stim_display(trial_stim.prime.fontcolor('#808080'));
     }, isi_delay);
     console.log('wait here?');
 
@@ -274,10 +274,6 @@ function stim_display(stim_name) { // formerly img_name
         correct_key = no_key;
     }
     console.log('correct key: ', correct_key);
-    //ctx.font = "50px Arial";
-    //ctx.fillText(stim_name,canvas.width/2, canvas.height/2);
-    //$('#stimulus').show();
-    //document.getElementById("stimulus").innerHTML = stim_name;
     $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
     stim_start = now();
     listen = true;
@@ -331,9 +327,7 @@ function practice_eval() {
     }
     if (is_valid == false) {
         let feedback_text =
-            "Du musst die Übungsrunde wiederholen, da du zu wenig korrekte Antworten für " +
-            types_failed.join(" und ") +
-            " hast.<br><br>Zur Erinnerung siehst du unten noch einmal die Instruktionen.<br><hr>";
+            "Du musst die Übungsrunde wiederholen, da du zu wenig korrekte Antworten hattest.<br><br>Zur Erinnerung siehst du unten noch einmal die Instruktionen.<br><hr>";
         $("#feedback_id").html(feedback_text);
     }
     return is_valid;

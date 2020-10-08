@@ -33,7 +33,7 @@ function prep_stims() {
     let stim_dict = [];
     let all_stims;
     let all_primes;
-    let all_colors = ['red', 'gray'];
+    let all_colors = ['#A90200', '#006600'];
     if (condition == 'S') {
         all_stims = anger.concat(fear, sad);
         all_primes = prime_a.concat(prime_f, prime_s);
@@ -79,6 +79,7 @@ function prep_stims() {
             console.log('Error in determining Target Category');
         }
     });
+    //stim_dict = stim_dict.map(lst => shuffle(lst));   WTF? 
     return stim_dict;
 }
 
