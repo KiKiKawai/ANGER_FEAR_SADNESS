@@ -1,7 +1,6 @@
 /*jshint esversion: 6 */
 
 let experiment_title = 'anger_fear';
-let canvas, ctx; // not needed?
 let actual_isi_delay_minmax = [300, 500];
 //let raf_warmup = 100; // not needed
 let basic_times = {};
@@ -22,8 +21,7 @@ $(document).ready(() => {
         dropChoices += '<option value="' + word + '">' + word + '</option>';
     });
     $("#country").append(dropChoices);
-    canvas = document.getElementById('rate_canvas');
-    ctx = canvas.getContext('2d');
+    //canvas = document.getElementById('rate_canvas');
     detectmob();
     set_block_texts();
     console.log('showing block texts now');
@@ -185,20 +183,25 @@ let block_texts = [];
 
 function set_block_texts() {
     block_texts.push(`
-        Sehr gut! Nun beginnt der erste der beiden Experimentalblöcke. Die Aufgabe bleibt gleich, aber die Wörter sind eingefärbt. Zur Erinnerung:<br>
+        Du hast die Übungsrunde erfolgreich beendet! Nun beginnt der erste der beiden Experimentalblöcke. Die Aufgabe bleibt gleich, aber die Wörter sind eingefärbt. Zur Erinnerung:<br>
         <br>
-        Drücke <b>"<span class="pos_key"></span>"</b>, wenn das Bild etwas <b>Positives</b> zeigt.<br>Drücke <b>"<span class="neg_key"></span>"</b>, wenn das Bild etwas <b>Negatives</b> zeigt.
+        Drücke <b>"<span class="key_yes"></span>"</b>, wenn Target und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Target und Kategoriewort <b>nicht zur selben Kategorie</b> gehören.
         <br>
         <br>
         Bitte antworte sowohl schnell als auch korrekt.
     `);
     block_texts.push(`
-        Nun folgt der letzte der beiden Experimentalblöcke. Die Farbe der Bilder ist erneut verändert, doch die Aufgabe bleibt gleich:
+        Sehr gut! Du kannst gern eine kleine Pause machen, bevor es mit dem letzten Experimentalblock weitergeht.<br><br>Die Aufgabe bleibt gleich.<br><br>Zur Erinnerung:<br>
         <br>
-        Drücke <b>"<span class="pos_key"></span>"</b>, wenn das Bild etwas <b>Positives</b> zeigt.<br>Drücke <b>"<span class="neg_key"></span>"</b>, wenn das Bild etwas <b>Negatives</b> zeigt.
+        Drücke <b>"<span class="key_yes"></span>"</b>, wenn Target und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Target und Kategoriewort <b>nicht zur selben Kategorie</b> gehören.
         <br>
         <br>
-        Antworte sowohl schnell als auch korrekt.
+        Bitte antworte sowohl schnell als auch korrekt.
+    `);
+    block_texts.push(`
+        Vielen Dank! Die Experimentalblöcke sind nun vorbei. Zum Schluss testen wir noch deine Sehfähigkeit (Rot-Grün-Unterscheidung).
+        <br>
+        Du wirst 3 Bilder mit Zahlen sehen. Bitte gib in das Textfeld die Nummer ein, die du auf dem jeweiligen Bild siehst.
     `);
 }
 
@@ -249,17 +252,36 @@ let rt_start = 99999;
 let stim_start = 0;
 let listen = false;
 
+let isi_delay;
+
+function isi() {
+    isi_delay = randomdigit(1, isi_delay_minmax[1] - isi_delay_minmax[0]);
+    console.log(isi_delay);
+    setTimeout(function() {
+        stim_display(trial_stim.prime);
+    }, isi_delay);
+    console.log('wait here?');
+
+    setTimeout(function() {
+        stim_display(trial_stim.target);
+    }, 500);
+}
+
 function stim_display(stim_name) { // formerly img_name
-    console.log('in stim display');
     if (trial_stim.prime_cat == trial_stim.target_cat) {
         correct_key = yes_key;
     } else {
         correct_key = no_key;
     }
-    ctx.fillText(stim_name, 0, 0);
+    console.log('correct key: ', correct_key);
+    //ctx.font = "50px Arial";
+    //ctx.fillText(stim_name,canvas.width/2, canvas.height/2);
+    //$('#stimulus').show();
+    //document.getElementById("stimulus").innerHTML = stim_name;
+    $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
     stim_start = now();
     listen = true;
-    console.log('insert function to display here');
+    console.log(stim_name,'stim displayed');
 }
 
 /* old image display function
@@ -284,15 +306,7 @@ function image_display(img_name) {
 }*/
 
 // isi
-let isi_delay;
 
-function isi() {
-    console.log('isi function');
-    isi_delay = randomdigit(1, isi_delay_minmax[1] - isi_delay_minmax[0]);
-    setTimeout(function() {
-        stim_display(trial_stim.prime);
-    }, isi_delay);
-}
 
 function practice_eval() {
     let min_ratio;
@@ -330,12 +344,12 @@ let warn_set;
 function next_trial() {
     console.log('started next_trial function');
     if (teststim.length > 0) {
-        console.log('teststim.length > 0');
         trial_stim = teststim.shift();
         block_trialnum++;
         isi();
     } else {
-        console.log('about to start the first trial i guess');
+        $('#stimulus').html('');
+        console.log('about to start the first trial i guess. reset stim_text to blank');
         if ((crrnt_phase !== 'practice') || (practice_eval())) {
             blocknum++;
             $("#infotext").html(block_texts.shift());
@@ -380,7 +394,7 @@ function add_response() {
     rt_start = 99999;
     keys_code = "NA";
     if (incorrect == 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        //ctx.clearRect(0, 0, canvas.width, canvas.height);
         resp_num = 1;
         next_trial();
     } else {

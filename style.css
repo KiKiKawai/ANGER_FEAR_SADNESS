@@ -72,17 +72,19 @@ input[type=number] {
     font-family: "Arial";
     color: #FFFFFF;
     display: none;
+    font-size: 50px;
+    text-align: center;
 }
 
 #stimulus {
-    height: 300px;
-    width: 300px;
     position: absolute;
     top: 50%;
     left: 50%;
     margin: 0;
     margin-right: -50%;
     transform: translate(-50%, -50%);
+    vertical-align: middle;
+
 }
 
 #start_text {

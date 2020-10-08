@@ -99,7 +99,8 @@ function prep_prac() {
         for (let prim of all_primes_p) {
             prac_dict.push({
                 prime: prim,
-                target: stim
+                target: stim,
+                color: "black"
             });
         }
     }
