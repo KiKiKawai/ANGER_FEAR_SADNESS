@@ -70,6 +70,7 @@ input[type=number] {
 
 #div_stimdisp {
     font-family: "Arial";
+    font-weight: bold;
     color: #FFFFFF;
     display: none;
     font-size: 50px;

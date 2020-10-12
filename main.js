@@ -35,9 +35,6 @@ function consented() {
     window.consent_now = Date.now();
     console.log(condition, yes_key, no_key);
     $("#div_intro_dems").show();
-    prep_prac();
-    console.log('prepping practice');
-    prep_stims();
 }
 
 function aborted() {

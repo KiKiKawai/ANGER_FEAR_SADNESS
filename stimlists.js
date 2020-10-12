@@ -19,6 +19,14 @@ let prime_f = ['ANGST'];
 let prime_s = ['KUMMER'];
 let prime_n = ['NEUTRAL'];
 
+let noun = ['ERZFEIND', 'ÄRGERNIS', 'FEHDE', 'AGGRESSION', 'STREIT', 'RACHE', 'PANIK', 'GEFAHR', 'FURCHT', 'SCHRECK', 'HORROR', 'SORGEN', 'FLUCHT', 'WEHMUT', 'WITWER', 'TRAGIK', 'TRÄNE', 'BEILEID', 'TRAUER', 'PRESSE', 'FRÄULEIN', 'NEUGIER', 'SUCHE', 'GIGANT', 'TEMPO'];
+let adj = ['ZORNIG', 'SAUER', 'GRUSELIG', 'SCHAURIG', 'EINSAM', 'TROSTLOS', 'ANONYM', 'LENKBAR'];
+let verb = ['HASSEN', 'TOBEN', 'SPUKEN', 'WEINEN', 'BEDAUERN', 'ÜBEN', 'STREICHEN'];
+
+/* hard coded split halves */
+let list1 = ['ERZFEIND', 'ÄRGERNIS', 'ZORNIG', 'TOBEN', 'STREIT', 'GEFAHR', 'SCHRECK', 'SPUKEN', 'GRUSELIG', 'FLUCHT', 'WEHMUT', 'WITWER', 'TRAGIK', 'WEINEN', 'EINSAM', 'FRÄULEIN', 'NEUGIER', 'GIGANT', 'ÜBEN', 'ANONYM'];
+let list2 = ['HASSEN', 'FEHDE', 'AGGRESSION', 'SAUER', 'RACHE', 'PANIK', 'FURCHT', 'HORROR', 'SCHAURIG', 'SORGEN', 'TRÄNE', 'BEDAUERN', 'TROSTLOS', 'BEILEID', 'TRAUER', 'PRESSE', 'SUCHE', 'TEMPO', 'STREICHEN', 'LENKBAR'];
+
 /*SPECIAL PRACTICE WORDS*/
 let pract_s = ['FEIND', 'MORDEN', 'BRUTAL', 'SCHAUDER', 'PANISCH', 'FÜRCHTEN', 'WAISE', 'TRAUERN', 'VERWEINT'];
 let pract_n = ['FEIND', 'MORDEN', 'BRUTAL', 'SCHAUDER', 'PANISCH', 'FÜRCHTEN', 'TEST', 'SALZIG', 'PLAUDERN'];
@@ -29,11 +37,20 @@ let pract_sad = ['WAISE', 'TRAUERN', 'VERWEINT'];
 let pract_neu = ['TEST', 'SALZIG', 'PLAUDERN'];
 
 /*PRIME-TARGET DICTIONARY/OBJECT*/
-function prep_stims() {
+// havl1 = first block stimuli, halv2 = second block stimuli
+function prep_stims(halv) { //--> list1 in col0 list2 in colr1
     let stim_dict = [];
     let all_stims;
     let all_primes;
     let all_colors = ['#A90200', '#006600'];
+    if (halv == 1) {
+        all_colors = ['#A90200', '#006600'];
+    } else if (halv == 2) {
+        all_colors = ['#006600', '#A90200'];
+    } else {
+        console.log('Preparation Error in All Color List');
+    }
+
     if (condition == 'S') {
         all_stims = anger.concat(fear, sad);
         all_primes = prime_a.concat(prime_f, prime_s);
@@ -45,16 +62,29 @@ function prep_stims() {
     }
     for (let stim of all_stims) {
         for (let prim of all_primes) {
-            for (let colr of all_colors) {
+            if (list1.includes(stim)) {
                 stim_dict.push({
                     prime: prim,
                     target: stim,
-                    color: colr
+                    color: all_colors[0]
+                });
+            }
+            if (list2.includes(stim)) {
+                stim_dict.push({
+                    prime: prim,
+                    target: stim,
+                    color: all_colors[1]
                 });
             }
         }
     }
-    stim_dict.forEach(function(element) { // determine prime & target categories
+
+    stim_dict = assign_cats(stim_dict);
+    return stim_dict;
+}
+
+function assign_cats(stmdcts) {
+    stmdcts.forEach(function(element) { // determine prime & target categories
         if (element.prime == "WUT") {
             element.prime_cat = "anger";
         } else if (element.prime == "ANGST") {
@@ -78,10 +108,22 @@ function prep_stims() {
         } else {
             console.log('Error in determining Target Category');
         }
+
+        if (noun.includes(element.target)) {
+            element.word_type = "noun";
+        } else if (adj.includes(element.target)) {
+            element.word_type = "adj";
+        } else if (verb.includes(element.target)) {
+            element.word_type = "verb";
+        } else {
+            console.log('Error in determining Target Word Type for: ', element.target);
+        }
     });
-    //stim_dict = stim_dict.map(lst => shuffle(lst));   WTF? 
-    return stim_dict;
+    return stmdcts;
 }
+
+let stim_main1 = shuffle(prep_stims(1));
+let stim_main2 = shuffle(prep_stims(2));
 
 function prep_prac() {
     let prac_dict = [];
@@ -144,12 +186,3 @@ function prep_prac() {
 }
 
 let stim_practice = prep_prac();
-
-let stim_main1 = prep_stims();
-let stim_main2 = prep_stims();
-
-/*
-
-let all_bw = neg_pics.concat(pos_pics);
-let all_file_names = all_bw.concat(stim_main1, stim_main2);
-*/
