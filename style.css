@@ -101,38 +101,21 @@ input[type=number] {
     color: #000;
 }
 
-/* QUESTIONNAIRE */
-#questions {
+#tooslow, #false {
+    width: 30%;
+    color: #000;
+    text-align: center;
+    font-size: 4.0vw;
+    position: fixed;
+    margin: 0;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     display: none;
-    position: relative;
-    padding-left: 5%;
-    text-align: left;
-    top: 25px;
-    font-size: 28px;
+    left: 50%;
+    top: 60%;
 }
 
-#questions input[type=radio] {
-    width: 20px;
-    height: 20px;
-}
-
-#questions input[type=number] {
-    width: 70px;
-    height: 30px;
-    font-size: 25px;
-}
-
-#questions input[type=range] {
-    width: 400px;
-    height: 30px;
-    font-size: 25px;
-}
-
-#questions input {
-    width: 170px;
-    height: 30px;
-    font-size: 25px;
-}
 
 .birthlang_class .birthlang_class_age {
     display: none;

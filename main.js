@@ -1,6 +1,9 @@
 /*jshint esversion: 6 */
 
 let experiment_title = 'anger_fear';
+let response_deadline = 1500;
+let tooslow_delay = 500;
+let false_delay = 500;
 let actual_isi_delay_minmax = [300, 500];
 //let raf_warmup = 100; // not needed
 let basic_times = {};
@@ -33,7 +36,6 @@ function consented() {
     $("#consent").hide();
     window.scrollTo(0, 0);
     window.consent_now = Date.now();
-    console.log(condition, yes_key, no_key);
     $("#div_intro_dems").show();
 }
 
@@ -56,10 +58,20 @@ function validate_form(form_class) {
         open_fulls();
         console.log('consented');
         window.scrollTo(0, 0);
+        dem_data = [subject_id,
+            condition,
+            yes_key,
+            $('input[name=gender]:checked').val(),
+            $("#age").val(),
+            $("#country").val(),
+            browser[0],
+            browser[1]
+        ].join('/');
+        console.log(dem_data);
         nextblock();
     } else {
         once_asked = true;
-        alert("Du hast nicht alle Demografische Daten angegeben. Bitte fülle alle Felder aus.");
+        alert("Du hast nicht alle Demografische Daten angegeben.");
     }
 }
 
@@ -74,35 +86,38 @@ let subject_id =
     rchoice("AEIOUY") +
     rchoice("CDFGHJKLMNPQRSTVWXZ") + '_' + neat_date();
 
-let images = {};
+//let images = {};
 
 
 window.params = new URLSearchParams(location.search);
 let studcod = params.get('a');
 
+let dem_data;
+
 function ending() {
     document.getElementById('Bye').style.display = 'block';
     let duration_full = Math.round((Date.now() - consent_now) / 600) / 100;
-
     full_data += 'dems\t' + [
             'subject_id',
+            'condition',
+            'yes_key_condition',
             'gender',
             'age',
             'country',
             'browser_name',
             'browser_version',
-            'first_type',
             'full_dur',
             'user_id'
         ].join('/') +
         '\t' + [
             subject_id,
+            condition,
+            yes_key,
             $('input[name=gender]:checked').val(),
             $("#age").val(),
             $("#country").val(),
             browser[0],
             browser[1],
-            first_type,
             duration_full,
             studcod
         ].join('/');
@@ -111,7 +126,7 @@ function ending() {
         "_" +
         subject_id +
         "_" +
-        first_type +
+        condition +
         "_" + studcod +
         ".txt";
     upload();
@@ -257,8 +272,6 @@ function isi() {
     setTimeout(function() {
         stim_display(trial_stim.prime.fontcolor('#808080'));
     }, isi_delay);
-    console.log('wait here?');
-
     setTimeout(function() {
         stim_display(trial_stim.target);
     }, 500);
@@ -274,32 +287,37 @@ function stim_display(stim_name) { // formerly img_name
     $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
     stim_start = now();
     listen = true;
+    /*response_window = setTimeout(function() {
+                rt_start = now() - stim_start;
+                listen = false;
+                flash_too_slow();
+            }, response_deadline);*/
     console.log(stim_name,'stim displayed');
 }
 
-/* old image display function
-function image_display(img_name) {
-    if (trial_stim.valence == "positive") {
-        correct_key = key_for_pos;
-    } else {
-        correct_key = key_for_neg;
-    }
-    window.warmup_needed = true;
-    chromeWorkaroundLoop();
-    setTimeout(function() {
-        let img = images[img_name];
-        let ratio = img.naturalHeight / img.naturalWidth;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.width * ratio);
-        requestPostAnimationFrame(function() {
-            stim_start = now();
-            warmup_needed = false;
-            listen = true;
-        });
-    }, raf_warmup); // time needed for raF timing "warmup"
-}*/
-
 // isi
 
+
+// too slow
+function flash_too_slow() {
+    $("#tooslow").show();
+    setTimeout(function() {
+        $("#tooslow").hide();
+        tooslow = 1;
+        keys_code = "x";
+        add_response();
+    }, tooslow_delay);
+}
+
+// false
+function flash_false() {
+    $("#false").show();
+    setTimeout(function() {
+        $("#false").hide();
+        incorrect = 1;
+        add_response();
+    }, false_delay);
+}
 
 function practice_eval() {
     let min_ratio;
@@ -352,12 +370,12 @@ function next_trial() {
     }
 }
 
-let full_data = ["subject_id", "phase", "block_number", "trial_number", "resp_number", "stimulus_shown", "color", "valence", "response_key", "rt_start", "incorrect", "isi", "date_in_ms"].join('\t') + '\n';
+let full_data = ["subject_id", "phase", "block_number", "trial_number", "resp_number", "prime", "prime_category", "target", "target_category", "target_wordtype" ,"color", "response_key", "rt_start", "incorrect", "yes_key_condition", "isi", "date_in_ms"].join('\t') + '\n';
 
 let resp_num = 1;
 
 function add_response() {
-    let curr_type = trial_stim.valence;
+    let curr_type = trial_stim.target_cat;
     if (!(curr_type in rt_data_dict)) {
         rt_data_dict[curr_type] = [];
     }
@@ -373,9 +391,12 @@ function add_response() {
         blocknum,
         block_trialnum,
         resp_num,
-        trial_stim.file,
+        trial_stim.prime,
+        trial_stim.prime_cat,
+        trial_stim.target,
+        trial_stim.target_cat,
+        trial_stim.word_type,
         trial_stim.color,
-        trial_stim.valence,
         keys_code,
         rt_start,
         incorrect,
@@ -512,8 +533,9 @@ $(document).ready(function() {
                 if (keys_code == correct_key) {
                     add_response();
                 } else {
-                    incorrect = 1;
-                    add_response();
+                    flash_false();
+                    //incorrect = 1;
+                    //add_response();
                 }
             }
         }
