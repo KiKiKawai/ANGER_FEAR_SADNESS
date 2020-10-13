@@ -2,7 +2,7 @@
 
 let experiment_title = 'anger_fear';
 let response_deadline = 1500;
-let tooslow_delay = 500;
+let tooslow_delay = 1500;
 let false_delay = 500;
 let actual_isi_delay_minmax = [300, 500];
 //let raf_warmup = 100; // not needed
@@ -270,8 +270,13 @@ function isi() {
     isi_delay = randomdigit(1, isi_delay_minmax[1] - isi_delay_minmax[0]);
     console.log(isi_delay);
     setTimeout(function() {
-        stim_display(trial_stim.prime.fontcolor('#808080'));
+        prime_display(trial_stim.prime.fontcolor('#808080'));
     }, isi_delay);
+}
+
+function prime_display(stim_name) { 
+    $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
+    console.log(stim_name,'stim displayed');
     setTimeout(function() {
         stim_display(trial_stim.target);
     }, 500);
@@ -287,11 +292,11 @@ function stim_display(stim_name) { // formerly img_name
     $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
     stim_start = now();
     listen = true;
-    /*response_window = setTimeout(function() {
+    response_window = setTimeout(function() {
                 rt_start = now() - stim_start;
                 listen = false;
                 flash_too_slow();
-            }, response_deadline);*/
+            }, response_deadline);
     console.log(stim_name,'stim displayed');
 }
 
@@ -529,6 +534,7 @@ $(document).ready(function() {
             rt_start = now() - stim_start;
             keys_code = e.key;
             if (['e', 'i'].includes(keys_code)) {
+                clearTimeout(response_window);
                 listen = false;
                 if (keys_code == correct_key) {
                     add_response();
