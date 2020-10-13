@@ -2,7 +2,7 @@
 
 let experiment_title = 'anger_fear';
 let response_deadline = 1500;
-let tooslow_delay = 1500;
+let tooslow_delay = 500;
 let false_delay = 500;
 let actual_isi_delay_minmax = [300, 500];
 //let raf_warmup = 100; // not needed
