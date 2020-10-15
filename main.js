@@ -264,8 +264,16 @@ let rt_start = 99999;
 let stim_start = 0;
 let listen = false;
 
-let isi_delay;
+// before isi
+function fix_display() {
+    console.log('you should see + for .1 s');
+    setTimeout(function() {
+        $('#fix').hide();
+    }, 100);
+    isi();
+}
 
+let isi_delay;
 function isi() {
     isi_delay = randomdigit(1, isi_delay_minmax[1] - isi_delay_minmax[0]);
     console.log(isi_delay);
@@ -274,7 +282,7 @@ function isi() {
     }, isi_delay);
 }
 
-function prime_display(stim_name) { 
+function prime_display(stim_name) {
     $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
     console.log(stim_name,'stim displayed');
     setTimeout(function() {
@@ -282,7 +290,7 @@ function prime_display(stim_name) {
     }, 500);
 }
 
-function stim_display(stim_name) { // formerly img_name
+function stim_display(stim_name) {
     if (trial_stim.prime_cat == trial_stim.target_cat) {
         correct_key = yes_key;
     } else {
@@ -299,9 +307,6 @@ function stim_display(stim_name) { // formerly img_name
             }, response_deadline);
     console.log(stim_name,'stim displayed');
 }
-
-// isi
-
 
 // too slow
 function flash_too_slow() {
@@ -324,7 +329,7 @@ function flash_false() {
     }, false_delay);
 }
 
-function practice_eval() {
+function practice_eval() { // TODO
     let min_ratio;
     min_ratio = 0.8;
     let is_valid = true;
@@ -360,7 +365,10 @@ function next_trial() {
     if (teststim.length > 0) {
         trial_stim = teststim.shift();
         block_trialnum++;
-        isi();
+        //isi();
+        $('#fix').show();
+        console.log('after show fix before fix__display');
+        fix_display();
     } else {
         $('#stimulus').html('');
         console.log('about to start the first trial i guess. reset stim_text to blank');
@@ -375,7 +383,7 @@ function next_trial() {
     }
 }
 
-let full_data = ["subject_id", "phase", "block_number", "trial_number", "resp_number", "prime", "prime_category", "target", "target_category", "target_wordtype" ,"color", "response_key", "rt_start", "incorrect", "yes_key_condition", "isi", "date_in_ms"].join('\t') + '\n';
+let full_data = ["subject_id", "phase", "block_number", "trial_number", "resp_number", "prime", "prime_category", "target", "target_category", "target_wordtype" ,"color", "response_key", "rt_start", "incorrect", "isi", "date_in_ms"].join('\t') + '\n';
 
 let resp_num = 1;
 

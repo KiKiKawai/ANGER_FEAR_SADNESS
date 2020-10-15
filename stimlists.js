@@ -42,11 +42,11 @@ function prep_stims(halv) { //--> list1 in col0 list2 in colr1
     let stim_dict = [];
     let all_stims;
     let all_primes;
-    let all_colors = ['#A90200', '#006600'];
+    let all_colors = ['#f60000', '#009500']; // WILMS OBERFELD: MEDIUM/HIGH: ['#A90200', '#006600']; HIGH/HIGH: ['#f60000', '#009500']
     if (halv == 1) {
-        all_colors = ['#A90200', '#006600'];
+        all_colors = ['#f60000', '#009500'];
     } else if (halv == 2) {
-        all_colors = ['#006600', '#A90200'];
+        all_colors = ['#009500','#f60000'];
     } else {
         console.log('Preparation Error in All Color List');
     }
