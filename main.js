@@ -4,10 +4,8 @@ let experiment_title = 'anger_fear';
 let response_deadline = 1500;
 let tooslow_delay = 500;
 let false_delay = 500;
-let actual_isi_delay_minmax = [300, 500];
-//let raf_warmup = 100; // not needed
 let basic_times = {};
-let isi_delay_minmax = [actual_isi_delay_minmax[0], actual_isi_delay_minmax[1]]; //not needed
+let isi_delay_minmax = [300, 400];
 let yes_key, no_key;
 if (Math.random() < 0.5) {
     yes_key = 'i';
@@ -268,19 +266,19 @@ let listen = false;
 function fix_display() {
     $('#stimulus').css('font-weight', 'normal');
     $('#stimulus').html('+'.fontcolor('#000000'));
-    console.log('after show fix before fix__display');
-    console.log('you should see + for .1 s');
+    console.log('show fixation cross');
     setTimeout(function() {
         $('#stimulus').html('');
-        $('#stimulus').css('font-weight', 'normal');
+        console.log('hide fixation cross');
+        $('#stimulus').css('font-weight', 'bold');
         isi();
-    }, 100);
+    }, 500);
 }
 
 let isi_delay;
 function isi() {
-    isi_delay = randomdigit(1, isi_delay_minmax[1] - isi_delay_minmax[0]);
-    console.log(isi_delay);
+    isi_delay = randomdigit(isi_delay_minmax[0], isi_delay_minmax[1]);
+    console.log('in isi now. isi delay = ', isi_delay);
     setTimeout(function() {
         prime_display(trial_stim.prime.fontcolor('#808080'));
     }, isi_delay);
@@ -290,8 +288,18 @@ function prime_display(stim_name) {
     $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
     console.log(stim_name,'stim displayed');
     setTimeout(function() {
-        stim_display(trial_stim.target);
+        $('#stimulus').html('');
+        blankit();
+        //stim_display(trial_stim.target);
     }, 500);
+}
+
+function blankit() {
+    setTimeout(function() {
+        //$('#stimulus').html('');
+        console.log('blank 400 ms');
+        stim_display(trial_stim.target);
+    }, 400);
 }
 
 function stim_display(stim_name) {
@@ -337,7 +345,6 @@ function practice_eval() { // TODO
     let min_ratio;
     min_ratio = 0.8;
     let is_valid = true;
-    let types_failed = [];
     for (let it_type in rt_data_dict) {
         let rts_correct = $.grep(rt_data_dict[it_type], function(rt_item) {
             return rt_item > 150;

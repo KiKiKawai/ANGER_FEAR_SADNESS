@@ -172,7 +172,7 @@ function prep_prac() {
             console.log('Error in determining Practice Target Category');
         }
     });
-    let prac_len = 10;
+    let prac_len = 9;
     let outp = prac_dict.reduce((resultArray, item, index) => {
         const chunkIndex = Math.floor(index / prac_len);
         if (!resultArray[chunkIndex]) {
@@ -182,7 +182,7 @@ function prep_prac() {
         return resultArray;
     }, []);
     outp = outp.map(lst => shuffle(lst));
-    return (outp);
+    return outp;
 }
 
-let stim_practice = prep_prac();
+let stim_practice = shuffle(prep_prac());
