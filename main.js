@@ -266,11 +266,15 @@ let listen = false;
 
 // before isi
 function fix_display() {
+    $('#stimulus').css('font-weight', 'normal');
+    $('#stimulus').html('+'.fontcolor('#000000'));
+    console.log('after show fix before fix__display');
     console.log('you should see + for .1 s');
     setTimeout(function() {
-        $('#fix').hide();
+        $('#stimulus').html('');
+        $('#stimulus').css('font-weight', 'normal');
+        isi();
     }, 100);
-    isi();
 }
 
 let isi_delay;
@@ -366,8 +370,6 @@ function next_trial() {
         trial_stim = teststim.shift();
         block_trialnum++;
         //isi();
-        $('#fix').show();
-        console.log('after show fix before fix__display');
         fix_display();
     } else {
         $('#stimulus').html('');
