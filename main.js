@@ -86,11 +86,12 @@ function ishi_eval() {
         nextblock();
         }
      else {
-         //window.scrollTo(0, 0);
+         window.scrollTo(0, 0);
+         console.log('Experiment aborted [ISHI]');
          $("#ishihara").hide();
-         $("abort_ishi").show();
-         /*alert("Das Ergebnis deines Sehtests ist nicht eindeutig. Da die Fähigkeit zur Rot-Grün-Unterscheidung wesentlich für das Experiment ist, kannst du nicht an dieser Studie teilnehmen. Wir entschuldigen uns für die Umstände und hoffen auf dein Verständnis.");
-         /*$("ishihara").html("Das Ergebnis deines Sehtests ist nicht eindeutig. Da die Fähigkeit zur Rot-Grün-Unterscheidung wesentlich für das Experiment ist, kannst du nicht an dieser Studie teilnehmen. Wir entschuldigen uns für die Umstände und hoffen auf dein Verständnis.");*/
+         $("#abort_div").show();
+         $("#abort_div").html("<h2>Experiment abgebrochen.</h2><br><br><br>Das Ergebnis deines Sehtests ist nicht eindeutig. Da die Fähigkeit zur Rot-Grün-Unterscheidung wesentlich für das Experiment ist, kannst du nicht an dieser Studie teilnehmen. Wir entschuldigen uns für die Umstände und hoffen auf dein Verständnis.");
+         // TODO ending stuff?
      }
 }
 
@@ -282,10 +283,8 @@ let listen = false;
 function fix_display() {
     $('#stimulus').css('font-weight', 'normal');
     $('#stimulus').html('+'.fontcolor('#000000'));
-    console.log('show fixation cross');
     setTimeout(function() {
         $('#stimulus').html('');
-        console.log('hide fixation cross');
         $('#stimulus').css('font-weight', 'bold');
         isi();
     }, 500);
@@ -294,7 +293,7 @@ function fix_display() {
 let isi_delay;
 function isi() {
     isi_delay = randomdigit(isi_delay_minmax[0], isi_delay_minmax[1]);
-    console.log('in isi now. isi delay = ', isi_delay);
+    console.log('ISI = ', isi_delay);
     setTimeout(function() {
         prime_display(trial_stim.prime.fontcolor('#808080'));
     }, isi_delay);
@@ -313,7 +312,6 @@ function prime_display(stim_name) {
 function blankit() {
     setTimeout(function() {
         //$('#stimulus').html('');
-        console.log('blank 400 ms');
         stim_display(trial_stim.target);
     }, 400);
 }
@@ -324,7 +322,7 @@ function stim_display(stim_name) {
     } else {
         correct_key = no_key;
     }
-    console.log('correct key: ', correct_key);
+    //console.log('correct key: ', correct_key);
     $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
     stim_start = now();
     listen = true;
@@ -358,7 +356,18 @@ function flash_false() {
 }
 
 function practice_eval() { // TODO
-    let min_ratio;
+    console.log('Number of Mistakes = ', mistakes.length );
+    let is_valid = true;
+    if (mistakes.length > 4) {
+        is_valid = false;
+    }
+    if (is_valid == false) {
+        let feedback_text =
+            "Du musst die Übungsrunde wiederholen, da du zu wenig korrekte Antworten hattest.<br><br>Zur Erinnerung siehst du unten noch einmal die Instruktionen.<br><hr>";
+        $("#feedback_id").html(feedback_text);
+    }
+    mistakes = [];
+        /*let min_ratio;
     min_ratio = 0.8;
     let is_valid = true;
     for (let it_type in rt_data_dict) {
@@ -381,14 +390,13 @@ function practice_eval() { // TODO
         let feedback_text =
             "Du musst die Übungsrunde wiederholen, da du zu wenig korrekte Antworten hattest.<br><br>Zur Erinnerung siehst du unten noch einmal die Instruktionen.<br><hr>";
         $("#feedback_id").html(feedback_text);
-    }
+    }*/
     return is_valid;
 }
 
 let warn_set;
 
 function next_trial() {
-    console.log('started next_trial function');
     if (teststim.length > 0) {
         trial_stim = teststim.shift();
         block_trialnum++;
@@ -396,7 +404,6 @@ function next_trial() {
         fix_display();
     } else {
         $('#stimulus').html('');
-        console.log('about to start the first trial i guess. reset stim_text to blank');
         if ((crrnt_phase !== 'practice') || (practice_eval())) {
             blocknum++;
             $("#infotext").html(block_texts.shift());
@@ -411,19 +418,26 @@ function next_trial() {
 let full_data = ["subject_id", "phase", "block_number", "trial_number", "resp_number", "prime", "prime_category", "target", "target_category", "target_wordtype", "color", "response_key", "rt_start", "incorrect", "isi", "date_in_ms"].join('\t') + '\n';
 
 let resp_num = 1;
+let mistakes = [];
 
 function add_response() {
-    let curr_type = trial_stim.target_cat;
+    let curr_type = trial_stim.target;
+    if (resp_num == 1){
+        if (incorrect == 1 || tooslow == 1) {
+            mistakes.push(curr_type);
+        }
+    }
+    /*let curr_type = trial_stim.target_cat;
     if (!(curr_type in rt_data_dict)) {
         rt_data_dict[curr_type] = [];
     }
     if (resp_num == 1) {
-        if (incorrect == 1) {
+        if (incorrect == 1 || tooslow == 1) {
             rt_data_dict[curr_type].push(-1);
         } else {
             rt_data_dict[curr_type].push(rt_start);
         }
-    }
+    }*/
     full_data += [subject_id,
         crrnt_phase,
         blocknum,
@@ -468,6 +482,7 @@ function nextblock() {
             prc_num++;
             if (prc_num >= stim_practice.length) {
                 prc_num = 0;
+                mistakes = [];
                 console.log('Practice reset to zero!');
             }
         } else if (blocknum == 2) {
