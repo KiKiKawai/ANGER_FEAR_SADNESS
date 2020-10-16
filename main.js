@@ -1,6 +1,7 @@
 /*jshint esversion: 6 */
 
 let experiment_title = 'anger_fear';
+//let img_ishi = ["1.png", "2.png", "3.png"];
 let response_deadline = 1500;
 let tooslow_delay = 500;
 let false_delay = 500;
@@ -53,7 +54,7 @@ function validate_form(form_class) {
             $("#age").val() != '' &&
             $("#country").val() != '')) {
         $("#div_intro_dems").hide();
-        open_fulls();
+        //open_fulls();
         console.log('consented');
         window.scrollTo(0, 0);
         dem_data = [subject_id,
@@ -66,11 +67,31 @@ function validate_form(form_class) {
             browser[1]
         ].join('/');
         console.log(dem_data);
-        nextblock();
+        $("#ishihara").show();
+        //nextblock();
     } else {
         once_asked = true;
         alert("Du hast nicht alle Demografische Daten angegeben.");
     }
+}
+
+function ishi_eval() {
+    if (
+        $("#n1").val() == '12' &&
+        $("#n2").val() == '6' &&
+        $("#n3").val() == '42' ){
+        open_fulls();
+        $("#ishihara").hide();
+        window.scrollTo(0, 0);
+        nextblock();
+        }
+     else {
+         //window.scrollTo(0, 0);
+         $("#ishihara").hide();
+         $("abort_ishi").show();
+         /*alert("Das Ergebnis deines Sehtests ist nicht eindeutig. Da die Fähigkeit zur Rot-Grün-Unterscheidung wesentlich für das Experiment ist, kannst du nicht an dieser Studie teilnehmen. Wir entschuldigen uns für die Umstände und hoffen auf dein Verständnis.");
+         /*$("ishihara").html("Das Ergebnis deines Sehtests ist nicht eindeutig. Da die Fähigkeit zur Rot-Grün-Unterscheidung wesentlich für das Experiment ist, kannst du nicht an dieser Studie teilnehmen. Wir entschuldigen uns für die Umstände und hoffen auf dein Verständnis.");*/
+     }
 }
 
 function demson() {}
@@ -207,11 +228,6 @@ function set_block_texts() {
         <br>
         <br>
         Bitte antworte sowohl schnell als auch korrekt.
-    `);
-    block_texts.push(`
-        Vielen Dank! Die Experimentalblöcke sind nun vorbei. Zum Schluss testen wir noch deine Sehfähigkeit (Rot-Grün-Unterscheidung).
-        <br>
-        Du wirst 3 Bilder mit Zahlen sehen. Bitte gib in das Textfeld die Nummer ein, die du auf dem jeweiligen Bild siehst.
     `);
 }
 
@@ -392,7 +408,7 @@ function next_trial() {
     }
 }
 
-let full_data = ["subject_id", "phase", "block_number", "trial_number", "resp_number", "prime", "prime_category", "target", "target_category", "target_wordtype" ,"color", "response_key", "rt_start", "incorrect", "isi", "date_in_ms"].join('\t') + '\n';
+let full_data = ["subject_id", "phase", "block_number", "trial_number", "resp_number", "prime", "prime_category", "target", "target_category", "target_wordtype", "color", "response_key", "rt_start", "incorrect", "isi", "date_in_ms"].join('\t') + '\n';
 
 let resp_num = 1;
 
@@ -422,7 +438,7 @@ function add_response() {
         keys_code,
         rt_start,
         incorrect,
-        isi_delay + isi_delay_minmax[0],
+        isi_delay,
         String(new Date().getTime())
     ].join('\t') + '\n';
     rt_start = 99999;

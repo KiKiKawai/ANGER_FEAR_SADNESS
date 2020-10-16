@@ -101,25 +101,57 @@
         <p>Wenn du es dir anders überlegst, kannst du die Seite aktualisieren oder zu einem späteren Zeitpunkt wieder aufrufen.</p>
     </div>
 
+    <div id="ishihara">
+        Zu Beginn testen wir noch deine Sehfähigkeit (Rot-Grün-Unterscheidung).
+        <br>
+        <h3>Wichtig: Bitte stelle in deinen Bildschirmeinstellungen die Helligkeit auf den Höchstwert! Behalte diese Einstellung für die gesamte Dauer des Experiments bei!</h3>
+        Unten siehst du 3 Bilder. Bitte gib in das Textfeld die Zahl ein, die du auf dem jeweiligen Bild siehst.
+        <br><br>
+        <div id="ishi_img">
+            <img id="img1" src="2.png" width="500" height="500">
+            <p><b>Zahl:</b></p>
+            <input type="number" value="" min="1" max="99" class="ishi_class" id="n1"><br>
+            <br><br>
+            <img id="img1" src="1.png" width="500" height="500">
+            <p><b>Zahl:</b></p>
+            <input type="number" value="" min="1" max="99" class="ishi_class" id="n2"><br>
+            <br><br>
+            <img id="img1" src="3.png" width="500" height="500">
+            <p><b>Zahl:</b></p>
+            <input type="number" value="" min="1" max="99" class="ishi_class" id="n3"><br>
+        </div>
+        <br><br>
+        <button class="kbutt" onclick="ishi_eval()">Antworten abschicken</button>
+    </div>
+
+    <div id="abort_ishi">
+        <h2>Experiment abgebrochen.</h2>
+        <br><br><br>
+        <p>Das Ergebnis deines Sehtests ist nicht eindeutig. Da die Fähigkeit zur Rot-Grün-Unterscheidung wesentlich für das Experiment ist, kannst du nicht an dieser Studie teilnehmen. Wir entschuldigen uns für die Umstände und hoffen auf dein Verständnis.</p>
+    </div>
+
     <div id="intro">
         <b><span id="feedback_id"></span></b>
         <div id="infotext">
             <h3>Informationen zum Ablauf:</h3>
             Im Folgenden werden dir nacheinander Wortpaare präsentiert.<br><br>
             <div style="text-align:left;padding:40px">
-                Das erste Wort, das du dabei siehst, ist immer das <b>Kategoriewort</b>. Insgesamt gibt es drei Kategoriewörter:<br><h3 style="text-align:center"><b>WUT, ANGST, <span class="prime_con"></span></b>.</h3>
+                Das erste Wort, das du dabei siehst, ist immer das <b>Kategoriewort</b>. Insgesamt gibt es drei Kategoriewörter:<br>
+                <h3 style="text-align:center"><b>WUT, ANGST, <span class="prime_con"></span></b>.</h3>
                 <br><br>Das zweite Wort, das kurz nach dem Kategoriewort erscheint,
                 ist das <b>Targetwort</b>. Davon gibt es insgesamt 30 verschiedene in diesem Experiment. Jedes Targetwort gehört in eine der drei Kategorien (<b>WUT, ANGST, <span class="prime_con"></span></b>).
                 <h3 style="text-align:center">Aufgabe:</h3>
                 Entscheide für <b>jedes Targetwort</b>, sobald es auf dem Bildschirm erscheint, ob es zu der Kategorie gehört, die das direkt zuvor gezeigte Kategoriewort beschreibt.
             </div>
             <br>
-            Drücke <b>"<span class="key_yes"></span>"</b>, wenn Target und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Target und Kategoriewort <b>nicht zur selben Kategorie</b> gehören.
+            Drücke <b>"<span class="key_yes"></span>"</b>, wenn Target und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Target und Kategoriewort <b>nicht zur selben Kategorie</b>
+            gehören.
             <br><br>
             <br>
             <hr> <!-- horizontal line -->
             <br>
-            Für deine Entscheidung hast du 1.5 Sekunden Zeit - danach verschwindet das Wort. Gibst du eine falsche Antwort, bleibt das Wort solange auf dem Bildschirm, bis du die korrekte Taste drückst.<br><br>Das Experiment beginnt mit einer kurzen Übungsrunde. Wenn du zu wenig korrekte oder zu langsame Antworten gibst, muss die Übungsrunde wiederholt werden.
+            Für deine Entscheidung hast du 1.5 Sekunden Zeit - danach verschwindet das Wort. Gibst du eine falsche Antwort, bleibt das Wort solange auf dem Bildschirm, bis du die korrekte Taste drückst.<br><br>Das Experiment beginnt mit einer
+            kurzen Übungsrunde. Wenn du zu wenig korrekte oder zu langsame Antworten gibst, muss die Übungsrunde wiederholt werden.
             <br>
         </div>
 
