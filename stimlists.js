@@ -36,6 +36,71 @@ let pract_fear = ['SCHAUDER', 'PANISCH', 'FÜRCHTEN'];
 let pract_sad = ['WAISE', 'TRAUERN', 'VERWEINT'];
 let pract_neu = ['TEST', 'SALZIG', 'PLAUDERN'];
 
+
+function prep_prac() {
+    let prac_dict = [];
+    let all_stims_p;
+    let all_primes_p;
+    if (condition == 'S') {
+        all_stims_p = pract_s;
+        all_primes_p = prime_a.concat(prime_f, prime_s);
+    } else if (condition == 'N') {
+        all_stims_p = pract_n;
+        all_primes_p = prime_a.concat(prime_f, prime_n);
+    } else {
+        console.log('Condition Error');
+    }
+    for (let stim of all_stims_p) {
+        for (let prim of all_primes_p) {
+            prac_dict.push({
+                prime: prim,
+                target: stim,
+                color: "black"
+            });
+        }
+    }
+    prac_dict.forEach(function(element) { // determine practice prime & target categories
+        if (element.prime == "WUT") {
+            element.prime_cat = "anger";
+        } else if (element.prime == "ANGST") {
+            element.prime_cat = "fear";
+        } else if (element.prime == "KUMMER") {
+            element.prime_cat = "sad";
+        } else if (element.prime == "NEUTRAL") {
+            element.prime_cat = "neu";
+        } else {
+            console.log('Error in determining Practice Prime Category');
+        }
+
+        if (pract_anger.includes(element.target)) {
+            element.target_cat = "anger";
+        } else if (pract_fear.includes(element.target)) {
+            element.target_cat = "fear";
+        } else if (pract_sad.includes(element.target)) {
+            element.target_cat = "sad";
+        } else if (pract_neu.includes(element.target)) {
+            element.target_cat = "neu";
+        } else {
+            console.log('Error in determining Practice Target Category');
+        }
+    });
+    prac_dict = shuffle(prac_dict);
+    let prac_len = 9;
+    let outp = prac_dict.reduce((resultArray, item, index) => {
+        const chunkIndex = Math.floor(index / prac_len);
+        if (!resultArray[chunkIndex]) {
+            resultArray[chunkIndex] = [];
+        }
+        resultArray[chunkIndex].push(item);
+        return resultArray;
+    }, []);
+    outp = outp.map(lst => shuffle(lst));
+    return outp;
+}
+
+let stim_practice = shuffle(prep_prac());
+
+
 /*PRIME-TARGET DICTIONARY/OBJECT*/
 // havl1 = first block stimuli, halv2 = second block stimuli
 function prep_stims(halv) { //--> list1 in col0 list2 in colr1
@@ -124,65 +189,3 @@ function assign_cats(stmdcts) { // ^=.=^
 
 let stim_main1 = shuffle(prep_stims(1));
 let stim_main2 = shuffle(prep_stims(2));
-
-function prep_prac() {
-    let prac_dict = [];
-    let all_stims_p;
-    let all_primes_p;
-    if (condition == 'S') {
-        all_stims_p = pract_s;
-        all_primes_p = prime_a.concat(prime_f, prime_s);
-    } else if (condition == 'N') {
-        all_stims_p = pract_n;
-        all_primes_p = prime_a.concat(prime_f, prime_n);
-    } else {
-        console.log('Condition Error');
-    }
-    for (let stim of all_stims_p) {
-        for (let prim of all_primes_p) {
-            prac_dict.push({
-                prime: prim,
-                target: stim,
-                color: "black"
-            });
-        }
-    }
-    prac_dict.forEach(function(element) { // determine practice prime & target categories
-        if (element.prime == "WUT") {
-            element.prime_cat = "anger";
-        } else if (element.prime == "ANGST") {
-            element.prime_cat = "fear";
-        } else if (element.prime == "KUMMER") {
-            element.prime_cat = "sad";
-        } else if (element.prime == "NEUTRAL") {
-            element.prime_cat = "neu";
-        } else {
-            console.log('Error in determining Practice Prime Category');
-        }
-
-        if (pract_anger.includes(element.target)) {
-            element.target_cat = "anger";
-        } else if (pract_fear.includes(element.target)) {
-            element.target_cat = "fear";
-        } else if (pract_sad.includes(element.target)) {
-            element.target_cat = "sad";
-        } else if (pract_neu.includes(element.target)) {
-            element.target_cat = "neu";
-        } else {
-            console.log('Error in determining Practice Target Category');
-        }
-    });
-    let prac_len = 9;
-    let outp = prac_dict.reduce((resultArray, item, index) => {
-        const chunkIndex = Math.floor(index / prac_len);
-        if (!resultArray[chunkIndex]) {
-            resultArray[chunkIndex] = [];
-        }
-        resultArray[chunkIndex].push(item);
-        return resultArray;
-    }, []);
-    outp = outp.map(lst => shuffle(lst));
-    return outp;
-}
-
-let stim_practice = shuffle(prep_prac());
