@@ -26,7 +26,6 @@ $(document).ready(() => {
     //canvas = document.getElementById('rate_canvas');
     detectmob();
     set_block_texts();
-    console.log('showing block texts now');
     $('#loading_id').hide();
     $('#div_intro_general').show();
 });
@@ -91,7 +90,8 @@ function ishi_eval() {
          $("#ishihara").hide();
          $("#abort_div").show();
          $("#abort_div").html("<h2>Experiment abgebrochen.</h2><br><br><br>Das Ergebnis deines Sehtests ist nicht eindeutig. Da die Fähigkeit zur Rot-Grün-Unterscheidung wesentlich für das Experiment ist, kannst du nicht an dieser Studie teilnehmen. Wir entschuldigen uns für die Umstände und hoffen auf dein Verständnis.");
-         // TODO ending stuff?
+         full_data += '\n' + 'xxxxx'.repeat(100) + '\n';
+         ending();
      }
 }
 
@@ -115,7 +115,6 @@ let studcod = params.get('a');
 let dem_data;
 
 function ending() {
-    document.getElementById('Bye').style.display = 'block';
     let duration_full = Math.round((Date.now() - consent_now) / 600) / 100;
     full_data += 'dems\t' + [
             'subject_id',
@@ -149,6 +148,7 @@ function ending() {
         condition +
         "_" + studcod +
         ".txt";
+    close_fulls();
     upload();
 }
 
@@ -267,6 +267,7 @@ function names_to_dicts(thefilenames) {
 
 let teststim,
     incorrect = 0,
+    tooslow = 0,
     block_trialnum,
     rt_data_dict,
     trial_stim,
@@ -293,7 +294,6 @@ function fix_display() {
 let isi_delay;
 function isi() {
     isi_delay = randomdigit(isi_delay_minmax[0], isi_delay_minmax[1]);
-    console.log('ISI = ', isi_delay);
     setTimeout(function() {
         prime_display(trial_stim.prime.fontcolor('#777777'));
     }, isi_delay);
@@ -301,7 +301,6 @@ function isi() {
 
 function prime_display(stim_name) {
     $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
-    console.log(stim_name,'stim displayed');
     setTimeout(function() {
         $('#stimulus').html('');
         blankit();
@@ -313,7 +312,7 @@ function blankit() {
     setTimeout(function() {
         //$('#stimulus').html('');
         stim_display(trial_stim.target);
-    }, 400);
+    }, 300); // 400 - 100
 }
 
 function stim_display(stim_name) {
@@ -323,15 +322,22 @@ function stim_display(stim_name) {
         correct_key = no_key;
     }
     //console.log('correct key: ', correct_key);
-    $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
-    stim_start = now();
-    listen = true;
-    response_window = setTimeout(function() {
+
+    window.warmup_needed = true;
+    chromeWorkaroundLoop();
+    setTimeout(function() {
+        $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
+        requestPostAnimationFrame(function() {
+            stim_start = now();
+            warmup_needed = false;
+            listen = true;
+            response_window = setTimeout(function() {
                 rt_start = now() - stim_start;
                 listen = false;
                 flash_too_slow();
             }, response_deadline);
-    console.log(stim_name,'stim displayed');
+        });
+    }, 100);
 }
 
 // too slow
@@ -358,7 +364,7 @@ function flash_false() {
 function practice_eval() { // TODO
     console.log('Number of Mistakes = ', mistakes.length );
     let is_valid = true;
-    if (mistakes.length > 4) {
+    if (mistakes.length > 4 && stim_practice[2].length != 0) {
         is_valid = false;
     }
     if (is_valid == false) {
@@ -366,31 +372,6 @@ function practice_eval() { // TODO
             "Du musst die Übungsrunde wiederholen, da du zu wenig korrekte Antworten hattest.<br><br>Zur Erinnerung siehst du unten noch einmal die Instruktionen.<br><hr>";
         $("#feedback_id").html(feedback_text);
     }
-    mistakes = [];
-        /*let min_ratio;
-    min_ratio = 0.8;
-    let is_valid = true;
-    for (let it_type in rt_data_dict) {
-        let rts_correct = $.grep(rt_data_dict[it_type], function(rt_item) {
-            return rt_item > 150;
-        });
-        corr_ratio = rts_correct.length / rt_data_dict[it_type].length;
-        if (corr_ratio < min_ratio) {
-            is_valid = false;
-            types_failed.push(
-                " " +
-                it_type +
-                " Bilder (" +
-                Math.floor(corr_ratio * 10000) / 100 +
-                '% korrekt)'
-            );
-        }
-    }
-    if (is_valid == false) {
-        let feedback_text =
-            "Du musst die Übungsrunde wiederholen, da du zu wenig korrekte Antworten hattest.<br><br>Zur Erinnerung siehst du unten noch einmal die Instruktionen.<br><hr>";
-        $("#feedback_id").html(feedback_text);
-    }*/
     return is_valid;
 }
 
@@ -427,17 +408,6 @@ function add_response() {
             mistakes.push(curr_type);
         }
     }
-    /*let curr_type = trial_stim.target_cat;
-    if (!(curr_type in rt_data_dict)) {
-        rt_data_dict[curr_type] = [];
-    }
-    if (resp_num == 1) {
-        if (incorrect == 1 || tooslow == 1) {
-            rt_data_dict[curr_type].push(-1);
-        } else {
-            rt_data_dict[curr_type].push(rt_start);
-        }
-    }*/
     full_data += [subject_id,
         crrnt_phase,
         blocknum,
@@ -460,9 +430,11 @@ function add_response() {
     if (incorrect == 0) {
         //ctx.clearRect(0, 0, canvas.width, canvas.height);
         resp_num = 1;
+        tooslow = 0;
         next_trial();
     } else {
         incorrect = 0;
+        tooslow = 0;
         listen = true;
         resp_num++;
     }
@@ -473,21 +445,19 @@ let prc_num = 0;
 
 function nextblock() {
     document.documentElement.style.cursor = 'auto';
+    mistakes = [];
     if (blocknum <= 3) {
         block_trialnum = 0;
         if (blocknum == 1) {
             crrnt_phase = 'practice';
-            //teststim = names_to_dicts(stim_practice[prc_num]);
             teststim = stim_practice[prc_num];
             prc_num++;
             if (prc_num >= stim_practice.length) {
                 prc_num = 0;
-                mistakes = [];
                 console.log('Practice reset to zero!');
             }
         } else if (blocknum == 2) {
             crrnt_phase = 'experiment_b1';
-            //teststim = get_main(stim_main1);
             teststim = stim_main1;
 
         } else {
@@ -504,9 +474,8 @@ function nextblock() {
     } else {
         document.body.style.backgroundColor = '#ccc';
         $("#div_stimdisp").hide();
+        document.getElementById('Bye').style.display = 'block';
         ending();
-        close_fulls();
-        $("#Bye").show();
     }
 }
 
@@ -517,56 +486,6 @@ function runblock() {
     document.documentElement.style.cursor = 'none';
     window.scrollTo(0, 0);
     can_start = true;
-}
-
-
-function get_main(thefilenams) {
-    console.log('get_main()');
-    let blck_itms_temp = names_to_dicts(thefilenams);
-    blck_itms_temp = shuffle(blck_itms_temp); // shuffle it, why not
-    let safecount = 0; // just to not freeze the app if sth goes wrong
-    let stim_dicts_f = []; // in here the final list of dictionary items is collected, one by one
-    while (blck_itms_temp.length > 0) { // stop if all items from blck_itms_temp were use up
-        let dict_item = blck_itms_temp[0];
-        safecount++;
-        if (safecount > 9911) {
-            console.log('break due to unfeasable safecount');
-            break;
-        }
-        let good_indexes = []; // will collect the indexes where the dict item may be inserted
-        let dummy_dict = [{
-            'item': '-',
-            'type': '-'
-        }]; // dummy dict to the end
-        let stim_dicts_f_d = stim_dicts_f.concat(dummy_dict);
-        stim_dicts_f_d.forEach((f_item, f_index) => {
-            if (!diginto_dict(stim_dicts_f, f_index, 'name', 20).includes(dict_item.name)) {
-                good_indexes.push(f_index); // if fine, do add as good index
-            }
-        });
-        if (good_indexes.length == 0) {
-            if (safecount > 99) {
-                console.log('no good_indexes - count', safecount);
-            }
-            blck_itms_temp = shuffle(blck_itms_temp); // reshuffle
-        } else { // if there are good places, choose one randomly, insert the new item, and remove it from blck_itms_temp
-            stim_dicts_f.splice(rchoice(good_indexes), 0, blck_itms_temp.shift());
-        }
-    }
-    console.log('safe count:', safecount);
-    return (stim_dicts_f); // return final list (for blck_items let assignment)
-}
-
-
-function diginto_dict(dcts, indx, key_name, min_dstnc) {
-    let strt;
-    if (indx - min_dstnc < 0) { // if starting index is negative, it counts from the end of the list; thats no good
-        strt = 0; // so if negative, we just set it to 0
-    } else {
-        strt = indx - min_dstnc; // if not negative, it can remain the same
-    }
-    let all_vals = dcts.slice(strt, indx + min_dstnc).map(a => a[key_name]);
-    return (all_vals); // return all values for the specified dict key within the specified distance (from the specified dictionary)
 }
 
 $(document).ready(function() {
@@ -597,3 +516,46 @@ $(document).ready(function() {
 });
 
 let countrs = ["Österreich", "Afghanistan", "Albanien", "Algerien", "Andorra", "Angola", "Antigua und Barbuda", "Argentinien", "Armenien", "Aserbaidschan", "Australien", "Bahamas", "Bahrain", "Bangladesch", "Barbados", "Belarus", "Belgien", "Belize", "Benin", "Bhutan", "Bolivien", "Bosnien und Herzegowina", "Botswana", "Brasilien", "Brunei", "Bulgarien", "Burkina Faso", "Burma", "Burundi", "Chile", "China", "Costa Rica", "Deutschland", "Dominica", "Dominikanische Republik", "Dschibuti", "Dänemark", "Ecuador", "El Salvador", "Elfenbeinküste", "Eritrea", "Estland", "Fidschi", "Finnland", "Frankreich", "Gabun", "Gambia", "Georgien", "Ghana", "Grenada", "Griechenland", "Guatemala", "Guinea", "Guinea Bissau", "Guyana", "Haiti", "Honduras", "Hongkong", "Indien", "Indonesien", "Irak", "Iran", "Irland", "Island", "Israel", "Italien", "Jamaika", "Japan", "Jemen", "Jordanien", "Kambodscha", "Kamerun", "Kanada", "Kap Verde", "Kasachstan", "Katar", "Kenia", "Kirgisistan", "Kiribati", "Kolumbien", "Komoren", "Kongo", "Kosovo", "Kroatien", "Kuba", "Kuwait", "Laos", "Lesotho", "Lettland", "Libanon", "Liberia", "Libyen", "Liechtenstein", "Litauen", "Luxemburg", "Macau", "Madagaskar", "Malawi", "Malaysia", "Malediven", "Mali", "Malta", "Marokko", "Marshallinseln", "Mauretanien", "Mauritius", "Mazedonien", "Mexiko", "Mikronesien", "Moldawien", "Monaco", "Mongolei", "Montenegro", "Mosambik", "Namibia", "Nauru", "Nepal", "Neuseeland", "Nicaragua", "Niederlande", "Niger", "Nigeria", "Nordkorea", "Norwegen", "Oman", "Pakistan", "Palau", "Panama", "Papua-Neuguinea", "Paraguay", "Peru", "Philippinen", "Polen", "Portugal", "Ruanda", "Rumänien", "Russland", "Salomonen", "Sambia", "Samoa", "San Marino", "Saudi-Arabien", "Schweden", "Schweiz", "Senegal", "Serbien", "Seychellen", "Sierra Leone", "Simbabwe", "Singapur", "Slowakei", "Slowenien", "Somalia", "Spanien", "Sri Lanka", "St. Kitts und Nevis", "St. Lucia", "St. Vincent", "Sudan", "Surinam", "Swasiland", "Syrien", "São Tomé und Príncipe", "Südafrika", "Südkorea", "Südsudan", "Tadschikistan", "Taiwan", "Tansania", "Thailand", "Timor Leste", "Togo", "Tonga", "Trinidad und Tobago", "Tschad", "Tschechische Republik", "Tunesien", "Turkmenistan", "Tuvalu", "Türkei", "Uganda", "Ukraine", "Ungarn", "Uruguay", "Usbekistan", "Vanuatu", "Vatikanstadt", "Venezuela", "Vereinigte Arabische Emirate", "Vereinigte Staaten", "Vereinigtes Königreich", "Vietnam", "Zentralafrikanische Republik", "Zypern", "Ägypten", "Äquatorialguinea", "Äthiopien"];
+
+
+
+// item display timing
+function monkeyPatchRequestPostAnimationFrame() {
+    const channel = new MessageChannel();
+    const callbacks = [];
+    let timestamp = 0;
+    let called = false;
+    channel.port2.onmessage = e => {
+        called = false;
+        const toCall = callbacks.slice();
+        callbacks.length = 0;
+        toCall.forEach(fn => {
+            try {
+                fn(timestamp);
+            } catch (e) {}
+        });
+    };
+    window.requestPostAnimationFrame = function(callback) {
+        if (typeof callback !== 'function') {
+            throw new TypeError('Argument 1 is not callable');
+        }
+        callbacks.push(callback);
+        if (!called) {
+            requestAnimationFrame((time) => {
+                timestamp = time;
+                channel.port1.postMessage('');
+            });
+            called = true;
+        }
+    };
+}
+
+if (typeof requestPostAnimationFrame !== 'function') {
+    monkeyPatchRequestPostAnimationFrame();
+}
+
+function chromeWorkaroundLoop() {
+    if (warmup_needed) {
+        requestAnimationFrame(chromeWorkaroundLoop);
+    }
+}
