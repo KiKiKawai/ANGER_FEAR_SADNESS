@@ -83,7 +83,7 @@ function prep_stims(halv) { //--> list1 in col0 list2 in colr1
     return stim_dict;
 }
 
-function assign_cats(stmdcts) {
+function assign_cats(stmdcts) { // ^=.=^
     stmdcts.forEach(function(element) { // determine prime & target categories
         if (element.prime == "WUT") {
             element.prime_cat = "anger";

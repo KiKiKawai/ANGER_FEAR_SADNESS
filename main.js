@@ -215,7 +215,7 @@ let block_texts = [];
 
 function set_block_texts() {
     block_texts.push(`
-        Du hast die Übungsrunde erfolgreich beendet! Nun beginnt der erste der beiden Experimentalblöcke. Die Aufgabe bleibt gleich, aber die Wörter sind eingefärbt. Zur Erinnerung:<br>
+        Du hast die Übungsrunde beendet! Nun beginnt der erste der beiden Experimentalblöcke. Die Aufgabe bleibt gleich, aber die Wörter sind eingefärbt. Zur Erinnerung:<br>
         <br>
         Drücke <b>"<span class="key_yes"></span>"</b>, wenn Target und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Target und Kategoriewort <b>nicht zur selben Kategorie</b> gehören.
         <br>
@@ -295,7 +295,7 @@ function isi() {
     isi_delay = randomdigit(isi_delay_minmax[0], isi_delay_minmax[1]);
     console.log('ISI = ', isi_delay);
     setTimeout(function() {
-        prime_display(trial_stim.prime.fontcolor('#808080'));
+        prime_display(trial_stim.prime.fontcolor('#777777'));
     }, isi_delay);
 }
 
