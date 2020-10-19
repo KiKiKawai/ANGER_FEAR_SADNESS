@@ -157,8 +157,7 @@ function upload() {
             "store_finish.php", {
                 filename_post: f_name,
                 results_post: full_data,
-                sid_post: subject_id,
-                cond_post: 99
+                sid_post: subject_id
             },
             function(resp) {
                 console.log(resp);
