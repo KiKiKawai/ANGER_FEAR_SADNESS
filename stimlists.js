@@ -187,5 +187,5 @@ function assign_cats(stmdcts) { // ^=.=^
     return stmdcts;
 }
 
-let stim_main1 = shuffle(prep_stims(1));
-let stim_main2 = shuffle(prep_stims(2));
+let stim_main1 = shuffle(prep_stims(1)).concat(shuffle(prep_stims(1)));
+let stim_main2 = shuffle(prep_stims(2)).concat(shuffle(prep_stims(2)));
