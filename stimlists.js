@@ -4,9 +4,13 @@ let c_prime;
 if (Math.random() < 0.5) {
     condition = 'S';
     c_prime = 'KUMMER';
+    c_target = 'WEHMUT, WITWER, TRAGIK, WEINEN, TRÄNE, BEDAUERN, EINSAM, TROSTLOS, BEILEID, TRAUER';
+    p_target = 'WAISE, TRAUERN, VERWEINT';
 } else {
     condition = 'N';
     c_prime = 'NEUTRAL';
+    c_target = 'PRESSE, FRÄULEIN, NEUGIER, SUCHE, GIGANT, TEMPO, ÜBEN, STREICHEN, ANONYM, LENKBAR';
+    p_target = 'TEST, SALZIG, PLAUDERN';
 }
 
 let anger = ['ERZFEIND', 'HASSEN', 'ÄRGERNIS', 'FEHDE', 'ZORNIG', 'AGGRESSION', 'TOBEN', 'SAUER', 'STREIT', 'RACHE'];

@@ -2,7 +2,7 @@
 
 let experiment_title = 'anger_fear';
 //let img_ishi = ["1.png", "2.png", "3.png"];
-let response_deadline = 1500;
+let response_deadline = 2000;
 let tooslow_delay = 500;
 let false_delay = 500;
 let basic_times = {};
@@ -17,6 +17,10 @@ if (Math.random() < 0.5) {
 }
 
 $(document).ready(() => {
+    $(document).on("wheel", "input[type=number]", function(e) {
+        $(this).blur();
+    });
+    userid_check();
     window.scrollTo(0, 0);
     let dropChoices = '';
     countrs.forEach((word) => {
@@ -30,11 +34,29 @@ $(document).ready(() => {
     $('#div_intro_general').show();
 });
 
+function userid_check() {
+    window.params = new URLSearchParams(location.search);
+    window.userid = params.get('PROLIFIC_PID');
+    if (userid != null) {
+        $("#pay_info").html("Eine vollständige und adäquate Studienteilnahme wird mit 2.70 GBP via Prolific vergütet. (Deine Prolific ID wurde erkannt als <i>" + userid + '</i>. Nach erfolgreicher Teilnahme siehst du den Completion Link, der dich zu Prolific zurückbringt und deine Teilnahme bestätigt.) <b>Wichtig</b>: Wenn die Anzahl falscher oder ausgelassener Antworten den Toleranzbereich überschreitet (1/4 aller möglicher Antworten), behalten wir uns das Recht vor, die Vergütung zu verweigern.');
+    } else {
+        window.userid = "noid";
+        $("#passw_display").hide();
+    }
+}
+
 function consented() {
+    dem_data = [subject_id,
+        condition,
+        yes_key,
+        browser[0],
+        browser[1]
+    ].join('/');
+    console.log(dem_data);
     $("#consent").hide();
+    $("#ishihara").show();
     window.scrollTo(0, 0);
     window.consent_now = Date.now();
-    $("#div_intro_dems").show();
 }
 
 function aborted() {
@@ -47,7 +69,7 @@ function aborted() {
 
 let once_asked = false;
 
-function validate_form(form_class) {
+/*function validate_form(form_class) {
     if (once_asked === true || (
             $('input[name=gender]:checked').val() != undefined &&
             $("#age").val() != '' &&
@@ -72,27 +94,26 @@ function validate_form(form_class) {
         once_asked = true;
         alert("Du hast nicht alle Demografische Daten angegeben.");
     }
-}
+}*/
 
 function ishi_eval() {
     if (
         $("#n1").val() == '12' &&
         $("#n2").val() == '6' &&
-        $("#n3").val() == '42' ){
+        $("#n3").val() == '42') {
         open_fulls();
         $("#ishihara").hide();
         window.scrollTo(0, 0);
         nextblock();
-        }
-     else {
-         window.scrollTo(0, 0);
-         console.log('Experiment aborted [ISHI]');
-         $("#ishihara").hide();
-         $("#abort_div").show();
-         $("#abort_div").html("<h2>Experiment abgebrochen.</h2><br><br><br>Das Ergebnis deines Sehtests ist nicht eindeutig. Da die Fähigkeit zur Rot-Grün-Unterscheidung wesentlich für das Experiment ist, kannst du nicht an dieser Studie teilnehmen. Wir entschuldigen uns für die Umstände und hoffen auf dein Verständnis.");
-         full_data += '\n' + 'xxxxx'.repeat(100) + '\n';
-         ending();
-     }
+    } else {
+        window.scrollTo(0, 0);
+        console.log('Experiment aborted [ISHI]');
+        $("#ishihara").hide();
+        $("#abort_div").show();
+        $("#abort_div").html("<h2>Experiment abgebrochen.</h2><br><br><br>Das Ergebnis deines Sehtests ist nicht eindeutig. Da die Fähigkeit zur Rot-Grün-Unterscheidung wesentlich für das Experiment ist, kannst du nicht an dieser Studie teilnehmen. Wir entschuldigen uns für die Umstände und hoffen auf dein Verständnis.");
+        full_data += '\n' + 'xxxxx'.repeat(100) + '\n';
+        ending();
+    }
 }
 
 function demson() {}
@@ -106,12 +127,6 @@ let subject_id =
     rchoice("AEIOUY") +
     rchoice("CDFGHJKLMNPQRSTVWXZ") + '_' + neat_date();
 
-//let images = {};
-
-
-window.params = new URLSearchParams(location.search);
-let studcod = params.get('a');
-
 let dem_data;
 
 function ending() {
@@ -120,9 +135,6 @@ function ending() {
             'subject_id',
             'condition',
             'yes_key_condition',
-            'gender',
-            'age',
-            'country',
             'browser_name',
             'browser_version',
             'full_dur',
@@ -132,13 +144,10 @@ function ending() {
             subject_id,
             condition,
             yes_key,
-            $('input[name=gender]:checked').val(),
-            $("#age").val(),
-            $("#country").val(),
             browser[0],
             browser[1],
             duration_full,
-            studcod
+            userid
         ].join('/');
     window.f_name =
         experiment_title +
@@ -146,7 +155,7 @@ function ending() {
         subject_id +
         "_" +
         condition +
-        "_" + studcod +
+        "_" + userid +
         ".txt";
     close_fulls();
     upload();
@@ -163,9 +172,9 @@ function upload() {
                 console.log(resp);
                 if (resp.startsWith("Fail") || resp.startsWith("Warning")) {
                     $('#div_end_error').show();
-                    $("#passw_display").html('EIN FEHLER IST AUFGETRETEN! Bitte schließe die Seite NICHT und sende deine Ergebnisdaten, wenn möglich, an lkcsgaspar@gmail.com, zusammen mit folgendem Code: ' + studcod);
+                    $("#passw_display").html('EIN FEHLER IST AUFGETRETEN! Bitte schließe die Seite NICHT und sende deine Ergebnisdaten, wenn möglich, an lkcsgaspar@gmail.com, zusammen mit folgendem Code: ' + userid);
                 } else {
-                    let backlink = 'https://labs-univie.sona-systems.com/webstudy_credit.aspx?experiment_id=1001&credit_token=1e4f14a94e804d7db18d9a28ea8fffe7&survey_code=' + studcod;
+                    let backlink = 'https://app.prolific.co/submissions/complete?cc=229B8528';
                     $("#passw_display").html('<a href=' + backlink + ' target="_blank">' + backlink + '</a>');
                 }
             }
@@ -174,7 +183,7 @@ function upload() {
             console.log(xhr);
             console.log(error);
             $('#div_end_error').show();
-            $("#passw_display").html('EIN FEHLER IST AUFGETRETEN! Bitte schließe die Seite NICHT und sende deine Ergebnisdaten, wenn möglich, an lkcsgaspar@gmail.com, zusammen mit folgendem Code: ' + studcod);
+            $("#passw_display").html('EIN FEHLER IST AUFGETRETEN! Bitte schließe die Seite NICHT und sende deine Ergebnisdaten, wenn möglich, an lkcsgaspar@gmail.com, zusammen mit folgendem Code: ' + userid);
         });
 }
 
@@ -214,17 +223,26 @@ let block_texts = [];
 
 function set_block_texts() {
     block_texts.push(`
-        Du hast die Übungsrunde beendet! Nun beginnt der erste der beiden Experimentalblöcke. Die Aufgabe bleibt gleich, aber die Wörter sind eingefärbt. Zur Erinnerung:<br>
-        <br>
-        Drücke <b>"<span class="key_yes"></span>"</b>, wenn Target und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Target und Kategoriewort <b>nicht zur selben Kategorie</b> gehören.
+        Du hast die Übungsrunde beendet! Nun beginnt der erste der beiden Experimentalblöcke. Die Aufgabe bleibt gleich, aber die Zielwörter sind nun andere.
+        <br><br>
+        Achtung: Da jeder individuelle Assoziationen hat, gilt für dieses Experiment die folgende <b>fixe</b> Zuordnung.
+        <br><br>
+        <b>Kategorie WUT</b>: ERZFEIND, HASSEN, ÄRGERNIS, FEHDE, ZORNIG, AGGRESSION, TOBEN, SAUER, STREIT, RACHE.
+        <br><br>
+        <b>Kategorie ANGST</b>: PANIK, GEFAHR, FURCHT, SCHRECK, SPUKEN, GRUSELIG, HORROR, SCHAURIG, SORGEN, FLUCHT.
+        <br><br>
+        <b>Kategorie <span class="prime_con"></span></b>: <span class="target_con"></span>.
+        <br><hr><br
+        Zur Erinnerung:<br><br>
+        Drücke <b>"<span class="key_yes"></span>"</b>, wenn Zielwort und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Zielwort und Kategoriewort <b>nicht zur selben Kategorie</b> gehören.
         <br>
         <br>
         Bitte antworte sowohl schnell als auch korrekt.
     `);
     block_texts.push(`
-        Sehr gut! Du kannst gern eine kleine Pause machen, bevor es mit dem letzten Experimentalblock weitergeht.<br><br>Die Aufgabe bleibt gleich.<br><br>Zur Erinnerung:<br>
+        Sehr gut! Du kannst gern eine kleine Pause machen, bevor es mit dem letzten Experimentalblock weitergeht.<br><br>Die Aufgabe bleibt gleich.<br><hr><brZur Erinnerung:<br>
         <br>
-        Drücke <b>"<span class="key_yes"></span>"</b>, wenn Target und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Target und Kategoriewort <b>nicht zur selben Kategorie</b> gehören.
+        Drücke <b>"<span class="key_yes"></span>"</b>, wenn Zielwort und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Zielwort und Kategoriewort <b>nicht zur selben Kategorie</b> gehören.
         <br>
         <br>
         Bitte antworte sowohl schnell als auch korrekt.
@@ -237,7 +255,7 @@ function set_block_texts() {
 function names_to_dicts(thefilenames) {
     let dict_list = [];
     let abbr_dict = {
-        'p': 'positive',
+        p': 'positive',
         'n': 'negative'
     };
     shuffle(thefilenames).forEach((fname) => {
@@ -291,20 +309,24 @@ function fix_display() {
 }
 
 let isi_delay;
+
 function isi() {
     isi_delay = randomdigit(isi_delay_minmax[0], isi_delay_minmax[1]);
     setTimeout(function() {
-        prime_display(trial_stim.prime.fontcolor('#777777'));
+        prime_display(trial_stim.prime);
     }, isi_delay);
 }
 
 function prime_display(stim_name) {
-    $('#stimulus').html(stim_name.fontcolor(trial_stim.color));
+    $('#stimulus').html(stim_name.fontcolor('#777777'));
+    $('#stimulus').css('border', 'solid 1px #777777');
     setTimeout(function() {
         $('#stimulus').html('');
         blankit();
+        $('#stimulus').css('border', 'none');
         //stim_display(trial_stim.target);
     }, 500);
+
 }
 
 function blankit() {
@@ -361,7 +383,7 @@ function flash_false() {
 }
 
 function practice_eval() { // TODO
-    console.log('Number of Mistakes = ', mistakes.length );
+    console.log('Number of Mistakes = ', mistakes.length);
     let is_valid = true;
     if (mistakes.length > 4 && stim_practice[2].length != 0) {
         is_valid = false;
@@ -402,7 +424,7 @@ let mistakes = [];
 
 function add_response() {
     let curr_type = trial_stim.target;
-    if (resp_num == 1){
+    if (resp_num == 1) {
         if (incorrect == 1 || tooslow == 1) {
             mistakes.push(curr_type);
         }
@@ -468,7 +490,9 @@ function nextblock() {
         $("#div_stimdisp").hide();
         $('.key_yes').text(yes_key.toUpperCase());
         $('.key_no').text(no_key.toUpperCase());
+        $('.target_prac').text(p_target.toUpperCase());
         $('.prime_con').text(c_prime.toUpperCase());
+        $('.target_con').text(c_target.toUpperCase());
         $("#intro").show();
     } else {
         document.body.style.backgroundColor = '#ccc';

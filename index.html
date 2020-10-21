@@ -4,7 +4,7 @@
     <title>Univie Experiment</title>
     <meta charset="UTF-8">
     <meta name="google" content="notranslate">
-    <link rel="shortcut icon" type="image/png" href="favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="favicon.png" />
     <script src="./jquery-3.4.1.min.js" type="text/javascript"></script>
     <script src="./utils.js"></script>
     <script src="./stimlists.js"></script>
@@ -49,8 +49,18 @@
         <h1>Teilnehmerinformation und Einverständniserklärung</h1>
 
         <p><b>Ziel der Studie:</b>
-            <br>Die Studie untersucht die Verarbeitung von Emotionen. Du wirst verschiedene deutsche Wörter sehen, die du per Tastendruck kategorisieren musst. Dabei wird deine Reaktionszeit gemessen. Das Experiment dauert etwa
-            15-25 Minuten.</p>
+            <br>Die Studie untersucht die Verarbeitung von Emotionen. Du wirst verschiedene deutsche Wörter sehen, die du per Tastendruck kategorisieren musst. Dabei wird deine Reaktionszeit gemessen.</p>
+
+        <p><b>Vergütung:</b>
+            <br>
+            Das Experiment dauert etwa 25 Minuten.
+            <span id="pay_info">
+                <b>
+                    Wir konnten keine Prolific ID feststellen!
+                </b> Wir gehen davon aus, dass dies eine freiwillige Teilnahme ist und du dir bewusst bist, dass keine Vergütung erfolgen wird. Wenn du diese Studie als Job via Prolific gegen Vergütung durchführen möchtest, musst du den
+                entsprechenden Link zur Studie klicken, der über Prolific zur Verfügung gestellt wird.
+            </span>
+        </p>
 
         <p><b>Gesundheitsrisiken:</b>
             <br>Es sind keine physischen oder psychischen Risiken im Zusammenhang mit der Teilnahme an dieser Studie zu erwarten.</p>
@@ -72,9 +82,9 @@
                 <br>
                 <button type="button" id="consent_button" class="kbutt" onclick='consented();'>Zustimmen & Fortfahren</button>
                 <button type="button" id="consent_button" class="kbutt" onclick='aborted();'>Nicht Zustimmen & Seite Schließen</button>
-
     </div>
 
+    <!-- DEMOGRAPHICS
     <div id="div_intro_dems">
         <h2>Demografische Daten</h2>
         <h3>Bitte fülle die folgenden Angaben zu deiner Person aus:</h3>
@@ -92,14 +102,13 @@
         <br>
         <button class="kbutt" onclick="validate_form('.dem_form')">OK</button>
         <br>
-    </div>
+    </div>-->
 
     <div id="abort_div">
         <h2>Experiment abgebrochen.</h2>
         <br><br><br>
         <p><b>Ohne dein Einverständnis werden wir keine Testung durchführen!</b></p>
         <br><br>
-        <p>Wenn du es dir anders überlegst, kannst du die Seite aktualisieren oder zu einem späteren Zeitpunkt wieder aufrufen.</p>
     </div>
 
     <div id="ishihara">
@@ -129,27 +138,42 @@
         <b><span id="feedback_id"></span></b>
         <div id="infotext">
             <h3>Informationen zum Ablauf:</h3>
-            Im Folgenden werden dir nacheinander Wortpaare präsentiert.<br><br>
+            Im Folgenden werden dir nacheinander Wortpaare präsentiert.
             <div style="text-align:left;padding:40px">
                 Das erste Wort, das du dabei siehst, ist immer das <b>Kategoriewort</b>. Insgesamt gibt es drei Kategoriewörter:<br>
                 <h3 style="text-align:center"><b>WUT, ANGST, <span class="prime_con"></span></b>.</h3>
-                <br><br>Das zweite Wort, das kurz nach dem Kategoriewort erscheint,
-                ist das <b>Targetwort</b>. Davon gibt es insgesamt 30 verschiedene in diesem Experiment. Jedes Targetwort gehört in eine der drei Kategorien (<b>WUT, ANGST, <span class="prime_con"></span></b>).
-                <h3 style="text-align:center">Aufgabe:</h3>
-                Entscheide für <b>jedes Targetwort</b>, sobald es auf dem Bildschirm erscheint, ob es zu der Kategorie gehört, die das direkt zuvor gezeigte Kategoriewort beschreibt.
             </div>
-            <br>
-            Drücke <b>"<span class="key_yes"></span>"</b>, wenn Target und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Target und Kategoriewort <b>nicht zur selben Kategorie</b>
+            Dieses Kategoriewort ist immer grau und hat eine <span style="padding:12px;font-weight: bold;color:#777777;border:solid 1px #777777">UMRANDUNG</span> .
+            <div style="text-align:left;padding:40px">
+                <br>
+                Das zweite Wort, das kurz nach dem Kategoriewort erscheint,
+                ist das <b>Zielwort</b>. Davon gibt es insgesamt 30 verschiedene in diesem Experiment. Zielwörter haben keine Umrandung und sind nicht grau.
+                <br><br>
+            </div>
+                Jedes Zielwort gehört in <b>eine</b> der drei Kategorien (<b>WUT, ANGST, <span class="prime_con"></span></b>).
+                <br><br>
+                <hr> <!-- horizontal line -->
+                <h3 style="text-align:center">Aufgabe:</h3>
+                Entscheide für <b>jedes Zielwort</b>, sobald es auf dem Bildschirm erscheint, ob es zu der Kategorie gehört, die das direkt zuvor gezeigte Kategoriewort beschreibt.
+            <br><br>
+            Drücke <b>"<span class="key_yes"></span>"</b>, wenn Zielwort und Kategoriewort zur <b>selben Kategorie</b> gehören.<br>Drücke <b>"<span class="key_no"></span>"</b>, wenn Zielwort und Kategoriewort <b>nicht zur selben Kategorie</b>
             gehören.
             <br><br>
-            <br>
             <hr> <!-- horizontal line -->
             <br>
-            Für deine Entscheidung hast du 1.5 Sekunden Zeit - danach verschwindet das Wort. Gibst du eine falsche Antwort, bleibt das Wort solange auf dem Bildschirm, bis du die korrekte Taste drückst.<br><br>Das Experiment beginnt mit einer
-            kurzen Übungsrunde. Wenn du zu wenig korrekte oder zu langsame Antworten gibst, muss die Übungsrunde wiederholt werden (max. 3 Runden).
+            Für deine Entscheidung hast du 2 Sekunden Zeit - danach verschwindet das Zielwort. Gibst du eine falsche Antwort, bleibt das Wort solange auf dem Bildschirm, bis du die korrekte Taste drückst.<br><br>Das Experiment beginnt mit einer
+            kurzen Übungsrunde. Da jeder individuelle Assoziationen hat, gilt für die Übungsrunde folgende <b>fixe</b> Zuordnung:<br><br>
+            <b>Kategorie WUT</b>: FEIND, MORDEN, BRUTAL.<br><br>
+            <b>Kategorie ANGST</b>: SCHAUDER, PANISCH, FÜRCHTEN.<br><br>
+            <b>Kategorie <span class="prime_con"></span></b>: <span class="target_prac"></span>.
+            <br><br>
+            Erinnerung:
+            <b>"<span class="key_yes"></span> für gleiche Kategorie"</b> und<br>
+            <b>"<span class="key_no"></span> für unterschiedliche Kategorie"</b>!
+            <br><br>
+            Wenn du zu wenig korrekte oder zu langsame Antworten gibst, muss die Übungsrunde wiederholt werden (max. 3 Runden).
             <br>
         </div>
-
         <br>
         <br>
         <div class="start_button">
@@ -170,10 +194,10 @@
         <br>
         <b>Das Experiment ist nun vorbei, vielen Dank für deine Teilnahme!</b>
         <br>
-        <h3>Zum Öffnen bzw. Herunterladen des Debriefings klicke <a href="https://homepage.univie.ac.at/claudia.kawai/afs/Debriefing.pdf" target="_tab">hier</a>.
+        <h3>Wenn du Interesse am Hintergrund der Studie hast, klicke zum Öffnen bzw. Herunterladen des Debriefings <a href="https://homepage.univie.ac.at/claudia.kawai/afs/Debriefing.pdf" target="_tab">hier</a>.
         </h3>
         <br>
-        <h3>Um die Studie abzuschließen und deine Credits im LABS zu verbuchen, klicke diesen Link:</h3>
+        <h3>Um die Studie abzuschließen, klicke den Prolific Completion Link:</h3>
         <span style="color:red" id="passw_display"></span>
         <br>
         <br>
